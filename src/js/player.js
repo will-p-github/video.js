@@ -2254,9 +2254,13 @@ class Player extends Component {
 
       if (seconds === Infinity) {
         this.addClass('vjs-live');
+        if (this.options_.liveui) {
+          this.addClass('vjs-liveui');
+        }
         this.liveTracker.start();
       } else {
         this.removeClass('vjs-live');
+        this.removeClass('vjs-liveui');
         this.liveTracker.stop();
       }
       /**
@@ -4069,6 +4073,7 @@ Player.prototype.options_ = {
   playbackRates: [],
   // Add playback rate selection by adding rates
   // 'playbackRates': [0.5, 1, 1.5, 2],
+  liveui: false,
 
   // Included control sets
   children: [
@@ -4077,11 +4082,11 @@ Player.prototype.options_ = {
     'textTrackDisplay',
     'loadingSpinner',
     'bigPlayButton',
+    'liveTracker',
     'controlBar',
     'errorDisplay',
     'textTrackSettings',
-    'resizeManager',
-    'liveTracker'
+    'resizeManager'
   ],
 
   language: navigator && (navigator.languages && navigator.languages[0] || navigator.userLanguage || navigator.language) || 'en',
