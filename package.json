@@ -108,6 +108,7 @@
     "jsdoc": "^3.4.2",
     "karma": "^3.0.0",
     "karma-browserify": "^5.3.0",
+    "karma-spec-reporter": "0.0.32",
     "klaw-sync": "^6.0.0",
     "load-grunt-tasks": "^4.0.0",
     "markdown-table": "^1.0.0",
