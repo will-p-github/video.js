@@ -17,7 +17,7 @@
   "homepage": "https://videojs.com",
   "author": "Steve Heffernan",
   "scripts": {
-    "copy-fonts": "shx cp -R node_modules/videojs-font/fonts/* build/temp/font",
+    "copy-fonts": "shx cp -R node_modules/videojs-font/fonts build/temp/font",
     "copy-dist": "shx cp -R build/temp/* dist/",
     "copy-a11y": "shx cp sandbox/descriptions.html.example sandbox/descriptions.html",
     "copy-examples": "shx cp -R docs/examples dist/",
