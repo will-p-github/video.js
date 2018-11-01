@@ -35,6 +35,7 @@ QUnit.test('should create player instance that inherits from component and dispo
 
   assert.ok(player.el().nodeName === 'DIV');
   assert.ok(player.on, 'component function exists');
+  assert.ok(false, 'something went wrong');
 
   player.dispose();
   assert.ok(player.el() === null, 'element disposed');
