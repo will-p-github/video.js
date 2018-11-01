@@ -39,7 +39,11 @@ module.exports = function(config) {
     config.browserify.transform.push('browserify-istanbul');
   }
 
-  config.reporters = ['spec', 'coverage'];
+  config.reporters = ['spec', 'coverage', 'summary'];
+  config.specReporter = {
+    suppressPassed: true,
+    failFast: false
+  };
 
   config.preprocessors = {
     'test/**/*.js': ['browserify']
