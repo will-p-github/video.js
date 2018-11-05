@@ -117,7 +117,11 @@ export function assign(target, ...sources) {
  * @return {Boolean}
  */
 export function isObject(value) {
-  return !!value && typeof value === 'object';
+  return !!value && (typeof value === 'object' || toType(value) === 'htmlobjectelement');
+}
+
+function toType(value) {
+  return ({}).toString.call(value).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
 
 /**
