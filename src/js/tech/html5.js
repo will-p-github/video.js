@@ -959,7 +959,8 @@ Html5.Events = [
   'pause',
   'ratechange',
   'resize',
-  'volumechange'
+  'volumechange',
+  'drmsuccess'
 ];
 
 /**

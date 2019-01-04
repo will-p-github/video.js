@@ -4297,7 +4297,7 @@ var Component = function () {
    * @listens Component#touchleave
    * @listens Component#touchcancel
    * @listens Component#touchend
-    */
+     */
 
 
   Component.prototype.emitTapEvents = function emitTapEvents() {
@@ -14118,46 +14118,46 @@ Component.registerComponent('MenuButton', MenuButton);
  */
 
 var TrackButton = function (_MenuButton) {
-  inherits(TrackButton, _MenuButton);
+    inherits(TrackButton, _MenuButton);
 
-  /**
-   * Creates an instance of this class.
-   *
-   * @param {Player} player
-   *        The `Player` that this class should be attached to.
-   *
-   * @param {Object} [options]
-   *        The key/value store of player options.
-   */
-  function TrackButton(player, options) {
-    classCallCheck(this, TrackButton);
+    /**
+     * Creates an instance of this class.
+     *
+     * @param {Player} player
+     *        The `Player` that this class should be attached to.
+     *
+     * @param {Object} [options]
+     *        The key/value store of player options.
+     */
+    function TrackButton(player, options) {
+        classCallCheck(this, TrackButton);
 
-    var tracks = options.tracks;
+        var tracks = options.tracks;
 
-    var _this = possibleConstructorReturn(this, _MenuButton.call(this, player, options));
+        var _this = possibleConstructorReturn(this, _MenuButton.call(this, player, options));
 
-    if (_this.items.length <= 1) {
-      _this.hide();
+        if (_this.items.length <= 1) {
+            _this.hide();
+        }
+
+        if (!tracks) {
+            return possibleConstructorReturn(_this);
+        }
+
+        var updateHandler = bind(_this, _this.update);
+
+        tracks.addEventListener('removetrack', updateHandler);
+        tracks.addEventListener('addtrack', updateHandler);
+        _this.player_.on('ready', updateHandler);
+
+        _this.player_.on('dispose', function () {
+            tracks.removeEventListener('removetrack', updateHandler);
+            tracks.removeEventListener('addtrack', updateHandler);
+        });
+        return _this;
     }
 
-    if (!tracks) {
-      return possibleConstructorReturn(_this);
-    }
-
-    var updateHandler = bind(_this, _this.update);
-
-    tracks.addEventListener('removetrack', updateHandler);
-    tracks.addEventListener('addtrack', updateHandler);
-    _this.player_.on('ready', updateHandler);
-
-    _this.player_.on('dispose', function () {
-      tracks.removeEventListener('removetrack', updateHandler);
-      tracks.removeEventListener('addtrack', updateHandler);
-    });
-    return _this;
-  }
-
-  return TrackButton;
+    return TrackButton;
 }(MenuButton);
 
 Component.registerComponent('TrackButton', TrackButton);
@@ -17747,7 +17747,7 @@ Html5.supportsNativeAudioTracks = function () {
  * @private
  * @type {Array}
  */
-Html5.Events = ['loadstart', 'suspend', 'abort', 'error', 'emptied', 'stalled', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'waiting', 'seeking', 'seeked', 'ended', 'durationchange', 'timeupdate', 'progress', 'play', 'pause', 'ratechange', 'resize', 'volumechange'];
+Html5.Events = ['loadstart', 'suspend', 'abort', 'error', 'emptied', 'stalled', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'waiting', 'seeking', 'seeked', 'ended', 'durationchange', 'timeupdate', 'progress', 'play', 'pause', 'ratechange', 'resize', 'volumechange', 'drmsuccess'];
 
 /**
  * Boolean indicating whether the `Tech` supports volume control.
@@ -19538,6 +19538,7 @@ var Player = function (_Component) {
     this.on(this.tech_, 'loadedmetadata', this.updateStyleEl_);
     this.on(this.tech_, 'posterchange', this.handleTechPosterChange_);
     this.on(this.tech_, 'textdata', this.handleTechTextData_);
+    this.on(this.tech_, 'drmsuccess', this.handleTechDRMSuccess_);
 
     this.usingNativeControls(this.techGet_('controls'));
 
@@ -20201,6 +20202,10 @@ var Player = function (_Component) {
      * @type {EventTarget~Event}
      */
     this.trigger('textdata', data);
+  };
+
+  Player.prototype.handleTechDRMSuccess_ = function handleTechDRMSuccess_() {
+    this.trigger('drmsuccess');
   };
 
   /**

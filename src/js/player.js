@@ -980,6 +980,7 @@ class Player extends Component {
     this.on(this.tech_, 'loadedmetadata', this.updateStyleEl_);
     this.on(this.tech_, 'posterchange', this.handleTechPosterChange_);
     this.on(this.tech_, 'textdata', this.handleTechTextData_);
+    this.on(this.tech_, 'drmsuccess', this.handleTechDRMSuccess_);
 
     this.usingNativeControls(this.techGet_('controls'));
 
@@ -1584,6 +1585,10 @@ class Player extends Component {
      * @type {EventTarget~Event}
      */
     this.trigger('textdata', data);
+  }
+
+  handleTechDRMSuccess_() {
+    this.trigger('drmsuccess');
   }
 
   /**
