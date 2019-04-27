@@ -10569,6 +10569,7 @@ var PlayToggle = function (_Button) {
     var _this = possibleConstructorReturn(this, _Button.call(this, player, options));
 
     _this.on(player, 'play', _this.handlePlay);
+    _this.on(player, 'playing', _this.handlePlay);
     _this.on(player, 'pause', _this.handlePause);
     _this.on(player, 'ended', _this.handleEnded);
     return _this;
