@@ -40,7 +40,6 @@ class PlayProgressBar extends Component {
    *        from the left edge of the {@link SeekBar}
    */
   update(seekBarRect, seekBarPoint) {
-
     // If there is an existing rAF ID, cancel it so we don't over-queue.
     if (this.rafId_) {
       this.cancelAnimationFrame(this.rafId_);

@@ -40,6 +40,15 @@ class PlayToggle extends Button {
   }
 
   /**
+   * Replace the default click handler with a custom implementation.
+   */
+  useCustomClickHandler(handler) {
+    this.disable();
+    this.handleClick = handler;
+    this.enable();
+  }
+
+  /**
    * This gets called when an `PlayToggle` is "clicked". See
    * {@link ClickableComponent} for more detailed information on what a click can be.
    *
