@@ -48,20 +48,8 @@ class SeekBar extends Slider {
     // via an interval
     this.updateInterval = null;
 
-    this.on(player, ['playing'], () => {
-      this.clearInterval(this.updateInterval);
-
-      this.updateInterval = this.setInterval(() =>{
-        this.requestAnimationFrame(() => {
-          this.update();
-        });
-      }, UPDATE_REFRESH_INTERVAL);
-    });
-
-    this.on(player, ['ended', 'pause', 'waiting'], () => {
-      this.clearInterval(this.updateInterval);
-    });
-
+    this.on(player, ['playing'], this.enableUpdates);
+    this.on(player, ['ended', 'pause', 'waiting'], this.disableUpdates);
     this.on(player, ['timeupdate', 'ended'], this.update);
   }
 
@@ -77,6 +65,30 @@ class SeekBar extends Slider {
     }, {
       'aria-label': this.localize('Progress Bar')
     });
+  }
+
+  /**
+   * Enable updates of the progress bar
+   */
+  enableUpdates() {
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
+    }
+    this.updateInterval = this.setInterval(() =>{
+      this.requestAnimationFrame(() => {
+        this.update();
+      });
+    }, UPDATE_REFRESH_INTERVAL);
+  }
+
+  /**
+   * Disable updates of the progress bar
+   */
+  disableUpdates() {
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
+    }
+    this.updateInterval = null;
   }
 
   /**
@@ -120,9 +132,15 @@ class SeekBar extends Slider {
    *          The current percent at a number from 0-1
    */
   update(event) {
-    const percent = super.update();
+    let percent;
 
-    this.update_(this.getCurrentTime_(), percent);
+    if (this.updateInterval !== null) {
+      percent = super.update();
+      this.update_(this.getCurrentTime_(), percent);
+    } else {
+      percent = 0;
+    }
+
     return percent;
   }
 

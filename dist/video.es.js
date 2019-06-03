@@ -10586,6 +10586,17 @@ var PlayToggle = function (_Button) {
   };
 
   /**
+   * Replace the default click handler with a custom implementation.
+   */
+
+
+  PlayToggle.prototype.useCustomClickHandler = function useCustomClickHandler(handler) {
+    this.disable();
+    this.handleClick = handler;
+    this.enable();
+  };
+
+  /**
    * This gets called when an `PlayToggle` is "clicked". See
    * {@link ClickableComponent} for more detailed information on what a click can be.
    *
@@ -12146,20 +12157,8 @@ var SeekBar = function (_Slider) {
     // via an interval
     _this.updateInterval = null;
 
-    _this.on(player, ['playing'], function () {
-      _this.clearInterval(_this.updateInterval);
-
-      _this.updateInterval = _this.setInterval(function () {
-        _this.requestAnimationFrame(function () {
-          _this.update();
-        });
-      }, UPDATE_REFRESH_INTERVAL);
-    });
-
-    _this.on(player, ['ended', 'pause', 'waiting'], function () {
-      _this.clearInterval(_this.updateInterval);
-    });
-
+    _this.on(player, ['playing'], _this.enableUpdates);
+    _this.on(player, ['ended', 'pause', 'waiting'], _this.disableUpdates);
     _this.on(player, ['timeupdate', 'ended'], _this.update);
     return _this;
   }
@@ -12178,6 +12177,36 @@ var SeekBar = function (_Slider) {
     }, {
       'aria-label': this.localize('Progress Bar')
     });
+  };
+
+  /**
+   * Enable updates of the progress bar
+   */
+
+
+  SeekBar.prototype.enableUpdates = function enableUpdates() {
+    var _this2 = this;
+
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
+    }
+    this.updateInterval = this.setInterval(function () {
+      _this2.requestAnimationFrame(function () {
+        _this2.update();
+      });
+    }, UPDATE_REFRESH_INTERVAL);
+  };
+
+  /**
+   * Disable updates of the progress bar
+   */
+
+
+  SeekBar.prototype.disableUpdates = function disableUpdates() {
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
+    }
+    this.updateInterval = null;
   };
 
   /**
@@ -12221,9 +12250,15 @@ var SeekBar = function (_Slider) {
 
 
   SeekBar.prototype.update = function update(event) {
-    var percent = _Slider.prototype.update.call(this);
+    var percent = void 0;
 
-    this.update_(this.getCurrentTime_(), percent);
+    if (this.updateInterval !== null) {
+      percent = _Slider.prototype.update.call(this);
+      this.update_(this.getCurrentTime_(), percent);
+    } else {
+      percent = 0;
+    }
+
     return percent;
   };
 
