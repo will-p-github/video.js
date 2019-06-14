@@ -4,26 +4,72 @@
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
- *
- * Includes vtt.js <https://github.com/mozilla/vtt.js>
- * Available under Apache License Version 2.0
- * <https://github.com/mozilla/vtt.js/blob/master/LICENSE>
  */
 
-import window from 'global/window';
-import document from 'global/document';
-import tsml from 'tsml';
-import safeParseTuple from 'safe-json-parse/tuple';
-import xhr from 'xhr';
-import vtt from 'videojs-vtt.js';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.videojs = factory());
+}(this, (function () {
 
 var version = "6.7.3";
+
+var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+
+
+
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var win;
+
+if (typeof window !== "undefined") {
+    win = window;
+} else if (typeof commonjsGlobal !== "undefined") {
+    win = commonjsGlobal;
+} else if (typeof self !== "undefined"){
+    win = self;
+} else {
+    win = {};
+}
+
+var window_1 = win;
+
+var empty = {};
+
+
+var empty$1 = (Object.freeze || Object)({
+	'default': empty
+});
+
+var minDoc = ( empty$1 && empty ) || empty$1;
+
+var topLevel = typeof commonjsGlobal !== 'undefined' ? commonjsGlobal :
+    typeof window !== 'undefined' ? window : {};
+
+
+var doccy;
+
+if (typeof document !== 'undefined') {
+    doccy = document;
+} else {
+    doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'];
+
+    if (!doccy) {
+        doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'] = minDoc;
+    }
+}
+
+var document_1 = doccy;
 
 /**
  * @file browser.js
  * @module browser
  */
-var USER_AGENT = window.navigator && window.navigator.userAgent || '';
+var USER_AGENT = window_1.navigator && window_1.navigator.userAgent || '';
 var webkitVersionMap = /AppleWebKit\/([\d.]+)/i.exec(USER_AGENT);
 var appleWebkitVersion = webkitVersionMap ? parseFloat(webkitVersionMap.pop()) : null;
 
@@ -104,9 +150,9 @@ var IE_VERSION = function () {
 var IS_SAFARI = /Safari/i.test(USER_AGENT) && !IS_CHROME && !IS_ANDROID && !IS_EDGE;
 var IS_ANY_SAFARI = IS_SAFARI || IS_IOS;
 
-var TOUCH_ENABLED = isReal() && ('ontouchstart' in window || window.DocumentTouch && window.document instanceof window.DocumentTouch);
+var TOUCH_ENABLED = isReal() && ('ontouchstart' in window_1 || window_1.DocumentTouch && window_1.document instanceof window_1.DocumentTouch);
 
-var BACKGROUND_SIZE_SUPPORTED = isReal() && 'backgroundSize' in window.document.createElement('video').style;
+var BACKGROUND_SIZE_SUPPORTED = isReal() && 'backgroundSize' in window_1.document.createElement('video').style;
 
 var browser = (Object.freeze || Object)({
 	IS_IPAD: IS_IPAD,
@@ -405,19 +451,19 @@ var logByType = function logByType(type, args) {
 
   // If there's no console then don't try to output messages, but they will
   // still be stored in history.
-  if (!window.console) {
+  if (!window_1.console) {
     return;
   }
 
   // Was setting these once outside of this function, but containing them
   // in the function makes it easier to test cases where console doesn't exist
   // when the module is executed.
-  var fn = window.console[type];
+  var fn = window_1.console[type];
 
   if (!fn && type === 'debug') {
     // Certain browsers don't have support for console.debug. For those, we
     // should default to the closest comparable log.
-    fn = window.console.info || window.console.log;
+    fn = window_1.console.info || window_1.console.log;
   }
 
   // Bail out if there's no console or if this type is not allowed by the
@@ -449,7 +495,7 @@ var logByType = function logByType(type, args) {
   if (!fn.apply) {
     fn(args);
   } else {
-    fn[Array.isArray(args) ? 'apply' : 'call'](window.console, args);
+    fn[Array.isArray(args) ? 'apply' : 'call'](window_1.console, args);
   }
 };
 
@@ -605,6 +651,21 @@ log.debug = function () {
 
 var log$1 = log;
 
+function clean (s) {
+  return s.replace(/\n\r?\s*/g, '')
+}
+
+
+var tsml = function tsml (sa) {
+  var s = ''
+    , i = 0;
+
+  for (; i < arguments.length; i++)
+    s += clean(sa[i]) + (arguments[i + 1] || '');
+
+  return s
+};
+
 /**
  * @file computed-style.js
  * @module computed-style
@@ -632,8 +693,8 @@ function computedStyle(el, prop) {
     return '';
   }
 
-  if (typeof window.getComputedStyle === 'function') {
-    var cs = window.getComputedStyle(el);
+  if (typeof window_1.getComputedStyle === 'function') {
+    var cs = window_1.getComputedStyle(el);
 
     return cs ? cs[prop] : '';
   }
@@ -702,11 +763,11 @@ function isReal() {
   return (
 
     // Both document and window will never be undefined thanks to `global`.
-    document === window.document &&
+    document_1 === window_1.document &&
 
     // In IE < 9, DOM methods return "object" as their type, so all we can
     // confidently check is that it exists.
-    typeof document.createElement !== 'undefined'
+    typeof document_1.createElement !== 'undefined'
   );
 }
 
@@ -735,7 +796,7 @@ function isInFrame() {
   // We need a try/catch here because Safari will throw errors when attempting
   // to get either `parent` or `self`
   try {
-    return window.parent !== window.self;
+    return window_1.parent !== window_1.self;
   } catch (x) {
     return true;
   }
@@ -753,13 +814,13 @@ function isInFrame() {
 function createQuerier(method) {
   return function (selector, context) {
     if (!isNonBlankString(selector)) {
-      return document[method](null);
+      return document_1[method](null);
     }
     if (isNonBlankString(context)) {
-      context = document.querySelector(context);
+      context = document_1.querySelector(context);
     }
 
-    var ctx = isEl(context) ? context : document;
+    var ctx = isEl(context) ? context : document_1;
 
     return ctx[method] && ctx[method](selector);
   };
@@ -789,7 +850,7 @@ function createEl() {
   var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var content = arguments[3];
 
-  var el = document.createElement(tagName);
+  var el = document_1.createElement(tagName);
 
   Object.getOwnPropertyNames(properties).forEach(function (propName) {
     var val = properties[propName];
@@ -1108,8 +1169,8 @@ function removeAttribute(el, attribute) {
  * Attempt to block the ability to select text while dragging controls
  */
 function blockTextSelection() {
-  document.body.focus();
-  document.onselectstart = function () {
+  document_1.body.focus();
+  document_1.onselectstart = function () {
     return false;
   };
 }
@@ -1118,7 +1179,7 @@ function blockTextSelection() {
  * Turn off text selection blocking
  */
 function unblockTextSelection() {
-  document.onselectstart = function () {
+  document_1.onselectstart = function () {
     return true;
   };
 }
@@ -1204,15 +1265,15 @@ function findPosition(el) {
     };
   }
 
-  var docEl = document.documentElement;
-  var body = document.body;
+  var docEl = document_1.documentElement;
+  var body = document_1.body;
 
   var clientLeft = docEl.clientLeft || body.clientLeft || 0;
-  var scrollLeft = window.pageXOffset || body.scrollLeft;
+  var scrollLeft = window_1.pageXOffset || body.scrollLeft;
   var left = box.left + scrollLeft - clientLeft;
 
   var clientTop = docEl.clientTop || body.clientTop || 0;
-  var scrollTop = window.pageYOffset || body.scrollTop;
+  var scrollTop = window_1.pageYOffset || body.scrollTop;
   var top = box.top + scrollTop - clientTop;
 
   // Android sometimes returns slightly off decimal values, so need to round
@@ -1345,7 +1406,7 @@ function normalizeContent(content) {
     }
 
     if (typeof value === 'string' && /\S/.test(value)) {
-      return document.createTextNode(value);
+      return document_1.createTextNode(value);
     }
   }).filter(function (value) {
     return value;
@@ -1729,7 +1790,7 @@ function fixEvent(event) {
   // other expected methods like isPropagationStopped. Seems to be a problem
   // with the Javascript Ninja code. So we're just overriding all events now.
   if (!event || !event.isPropagationStopped) {
-    var old = event || window.event;
+    var old = event || window_1.event;
 
     event = {};
     // Clone the old object so that we can modify the values event = {};
@@ -1752,7 +1813,7 @@ function fixEvent(event) {
 
     // The event occurred on this element
     if (!event.target) {
-      event.target = event.srcElement || document;
+      event.target = event.srcElement || document_1;
     }
 
     // Handle which other element the event is related to
@@ -1797,8 +1858,8 @@ function fixEvent(event) {
 
     // Handle mouse position
     if (event.clientX !== null && event.clientX !== undefined) {
-      var doc = document.documentElement;
-      var body = document.body;
+      var doc = document_1.documentElement;
+      var body = document_1.body;
 
       event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
       event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
@@ -1836,8 +1897,8 @@ var _supportsPassive = false;
       }
     });
 
-    window.addEventListener('test', null, opts);
-    window.removeEventListener('test', null, opts);
+    window_1.addEventListener('test', null, opts);
+    window_1.removeEventListener('test', null, opts);
   } catch (e) {
     // disregard
   }
@@ -2125,9 +2186,9 @@ var autoSetup = function autoSetup() {
 
   // Because IE8 doesn't support calling slice on a node list, we need to loop
   // through each list of elements to build up a new, combined list of elements.
-  var vids = document.getElementsByTagName('video');
-  var audios = document.getElementsByTagName('audio');
-  var divs = document.getElementsByTagName('video-js');
+  var vids = document_1.getElementsByTagName('video');
+  var audios = document_1.getElementsByTagName('audio');
+  var divs = document_1.getElementsByTagName('video-js');
   var mediaEls = [];
 
   if (vids && vids.length > 0) {
@@ -2199,10 +2260,10 @@ function autoSetupTimeout(wait, vjs) {
     videojs$2 = vjs;
   }
 
-  window.setTimeout(autoSetup, wait);
+  window_1.setTimeout(autoSetup, wait);
 }
 
-if (isReal() && document.readyState === 'complete') {
+if (isReal() && document_1.readyState === 'complete') {
   _windowLoaded = true;
 } else {
   /**
@@ -2210,7 +2271,7 @@ if (isReal() && document.readyState === 'complete') {
    *
    * @listens load
    */
-  one(window, 'load', function () {
+  one(window_1, 'load', function () {
     _windowLoaded = true;
   });
 }
@@ -2229,7 +2290,7 @@ if (isReal() && document.readyState === 'complete') {
  *         The element that was created.
  */
 var createStyleElement = function createStyleElement(className) {
-  var style = document.createElement('style');
+  var style = document_1.createElement('style');
 
   style.className = className;
 
@@ -2348,7 +2409,7 @@ var throttle = function throttle(fn, wait) {
  *         A debounced function.
  */
 var debounce = function debounce(func, wait, immediate) {
-  var context = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : window;
+  var context = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : window_1;
 
   var timeout = void 0;
 
@@ -2938,7 +2999,7 @@ function evented(target) {
   // When any evented object is disposed, it removes all its listeners.
   target.on('dispose', function () {
     target.off();
-    window.setTimeout(function () {
+    window_1.setTimeout(function () {
       target.eventBusEl_ = null;
     }, 0);
   });
@@ -4191,8 +4252,8 @@ var Component = function () {
       throw new Error('currentDimension only accepts width or height value');
     }
 
-    if (typeof window.getComputedStyle === 'function') {
-      var computedStyle = window.getComputedStyle(this.el_);
+    if (typeof window_1.getComputedStyle === 'function') {
+      var computedStyle = window_1.getComputedStyle(this.el_);
 
       computedWidthOrHeight = computedStyle.getPropertyValue(widthOrHeight) || computedStyle[widthOrHeight];
     }
@@ -4478,7 +4539,7 @@ var Component = function () {
 
     fn = bind(this, fn);
 
-    var timeoutId = window.setTimeout(fn, timeout);
+    var timeoutId = window_1.setTimeout(fn, timeout);
     var disposeFn = function disposeFn() {
       return _this2.clearTimeout(timeoutId);
     };
@@ -4508,7 +4569,7 @@ var Component = function () {
 
 
   Component.prototype.clearTimeout = function clearTimeout(timeoutId) {
-    window.clearTimeout(timeoutId);
+    window_1.clearTimeout(timeoutId);
 
     var disposeFn = function disposeFn() {};
 
@@ -4546,7 +4607,7 @@ var Component = function () {
 
     fn = bind(this, fn);
 
-    var intervalId = window.setInterval(fn, interval);
+    var intervalId = window_1.setInterval(fn, interval);
 
     var disposeFn = function disposeFn() {
       return _this3.clearInterval(intervalId);
@@ -4577,7 +4638,7 @@ var Component = function () {
 
 
   Component.prototype.clearInterval = function clearInterval(intervalId) {
-    window.clearInterval(intervalId);
+    window_1.clearInterval(intervalId);
 
     var disposeFn = function disposeFn() {};
 
@@ -4621,7 +4682,7 @@ var Component = function () {
     if (this.supportsRaf_) {
       fn = bind(this, fn);
 
-      var id = window.requestAnimationFrame(fn);
+      var id = window_1.requestAnimationFrame(fn);
       var disposeFn = function disposeFn() {
         return _this4.cancelAnimationFrame(id);
       };
@@ -4656,7 +4717,7 @@ var Component = function () {
 
   Component.prototype.cancelAnimationFrame = function cancelAnimationFrame(id) {
     if (this.supportsRaf_) {
-      window.cancelAnimationFrame(id);
+      window_1.cancelAnimationFrame(id);
 
       var disposeFn = function disposeFn() {};
 
@@ -4784,7 +4845,7 @@ var Component = function () {
  */
 
 
-Component.prototype.supportsRaf_ = typeof window.requestAnimationFrame === 'function' && typeof window.cancelAnimationFrame === 'function';
+Component.prototype.supportsRaf_ = typeof window_1.requestAnimationFrame === 'function' && typeof window_1.cancelAnimationFrame === 'function';
 
 Component.registerComponent('Component', Component);
 
@@ -4992,7 +5053,7 @@ var browserApi = void 0;
 // determine the supported set of functions
 for (var i = 0; i < apiMap.length; i++) {
   // check for exitFullscreen function
-  if (apiMap[i][1] in document) {
+  if (apiMap[i][1] in document_1) {
     browserApi = apiMap[i];
     break;
   }
@@ -5115,6 +5176,21 @@ for (var errNum = 0; errNum < MediaError.errorTypes.length; errNum++) {
   MediaError[MediaError.errorTypes[errNum]] = errNum;
   // values should be accessible on both the class and instance
   MediaError.prototype[MediaError.errorTypes[errNum]] = errNum;
+}
+
+var tuple = SafeParseTuple;
+
+function SafeParseTuple(obj, reviver) {
+    var json;
+    var error = null;
+
+    try {
+        json = JSON.parse(obj, reviver);
+    } catch (err) {
+        error = err;
+    }
+
+    return [error, json]
 }
 
 /**
@@ -5706,7 +5782,7 @@ var ModalDialog = function (_Component) {
 
 
   ModalDialog.prototype.conditionalFocus_ = function conditionalFocus_() {
-    var activeEl = document.activeElement;
+    var activeEl = document_1.activeElement;
     var playerEl = this.player_.el_;
 
     this.previouslyActiveEl_ = null;
@@ -5716,7 +5792,7 @@ var ModalDialog = function (_Component) {
 
       this.focus();
 
-      this.on(document, 'keydown', this.handleKeyDown);
+      this.on(document_1, 'keydown', this.handleKeyDown);
     }
   };
 
@@ -5733,7 +5809,7 @@ var ModalDialog = function (_Component) {
       this.previouslyActiveEl_ = null;
     }
 
-    this.off(document, 'keydown', this.handleKeyDown);
+    this.off(document_1, 'keydown', this.handleKeyDown);
   };
 
   /**
@@ -5760,7 +5836,7 @@ var ModalDialog = function (_Component) {
       }
     }
 
-    if (document.activeElement === this.el_) {
+    if (document_1.activeElement === this.el_) {
       focusIndex = 0;
     }
 
@@ -5784,7 +5860,7 @@ var ModalDialog = function (_Component) {
     var allChildren = this.el_.querySelectorAll('*');
 
     return Array.prototype.filter.call(allChildren, function (child) {
-      return (child instanceof window.HTMLAnchorElement || child instanceof window.HTMLAreaElement) && child.hasAttribute('href') || (child instanceof window.HTMLInputElement || child instanceof window.HTMLSelectElement || child instanceof window.HTMLTextAreaElement || child instanceof window.HTMLButtonElement) && !child.hasAttribute('disabled') || child instanceof window.HTMLIFrameElement || child instanceof window.HTMLObjectElement || child instanceof window.HTMLEmbedElement || child.hasAttribute('tabindex') && child.getAttribute('tabindex') !== -1 || child.hasAttribute('contenteditable');
+      return (child instanceof window_1.HTMLAnchorElement || child instanceof window_1.HTMLAreaElement) && child.hasAttribute('href') || (child instanceof window_1.HTMLInputElement || child instanceof window_1.HTMLSelectElement || child instanceof window_1.HTMLTextAreaElement || child instanceof window_1.HTMLButtonElement) && !child.hasAttribute('disabled') || child instanceof window_1.HTMLIFrameElement || child instanceof window_1.HTMLObjectElement || child instanceof window_1.HTMLEmbedElement || child.hasAttribute('tabindex') && child.getAttribute('tabindex') !== -1 || child.hasAttribute('contenteditable');
     });
   };
 
@@ -5843,7 +5919,7 @@ var TrackList = function (_EventTarget) {
     if (!list) {
       list = _this; // eslint-disable-line
       if (IS_IE8) {
-        list = document.createElement('custom');
+        list = document_1.createElement('custom');
         for (var prop in TrackList.prototype) {
           if (prop !== 'constructor') {
             list[prop] = TrackList.prototype[prop];
@@ -6073,7 +6149,7 @@ var AudioTrackList = function (_TrackList) {
     // IE8 forces us to implement inheritance ourselves
     // as it does not support Object.defineProperty properly
     if (IS_IE8) {
-      list = document.createElement('custom');
+      list = document_1.createElement('custom');
       for (var prop in TrackList.prototype) {
         if (prop !== 'constructor') {
           list[prop] = TrackList.prototype[prop];
@@ -6196,7 +6272,7 @@ var VideoTrackList = function (_TrackList) {
     // IE8 forces us to implement inheritance ourselves
     // as it does not support Object.defineProperty properly
     if (IS_IE8) {
-      list = document.createElement('custom');
+      list = document_1.createElement('custom');
       for (var prop in TrackList.prototype) {
         if (prop !== 'constructor') {
           list[prop] = TrackList.prototype[prop];
@@ -6302,7 +6378,7 @@ var TextTrackList = function (_TrackList) {
     // IE8 forces us to implement inheritance ourselves
     // as it does not support Object.defineProperty properly
     if (IS_IE8) {
-      list = document.createElement('custom');
+      list = document_1.createElement('custom');
       for (var prop in TrackList.prototype) {
         if (prop !== 'constructor') {
           list[prop] = TrackList.prototype[prop];
@@ -6375,7 +6451,7 @@ var HtmlTrackElementList = function () {
     var list = this; // eslint-disable-line
 
     if (IS_IE8) {
-      list = document.createElement('custom');
+      list = document_1.createElement('custom');
 
       for (var prop in HtmlTrackElementList.prototype) {
         if (prop !== 'constructor') {
@@ -6526,7 +6602,7 @@ var TextTrackCueList = function () {
     var list = this; // eslint-disable-line
 
     if (IS_IE8) {
-      list = document.createElement('custom');
+      list = document_1.createElement('custom');
 
       for (var prop in TextTrackCueList.prototype) {
         if (prop !== 'constructor') {
@@ -6733,7 +6809,7 @@ var Track = function (_EventTarget) {
     var track = _this; // eslint-disable-line
 
     if (IS_IE8) {
-      track = document.createElement('custom');
+      track = document_1.createElement('custom');
       for (var prop in Track.prototype) {
         if (prop !== 'constructor') {
           track[prop] = Track.prototype[prop];
@@ -6846,7 +6922,7 @@ var parseUrl = function parseUrl(url) {
   var props = ['protocol', 'hostname', 'port', 'pathname', 'search', 'hash', 'host'];
 
   // add the url to an anchor and let the browser parse the URL
-  var a = document.createElement('a');
+  var a = document_1.createElement('a');
 
   a.href = url;
 
@@ -6857,12 +6933,12 @@ var parseUrl = function parseUrl(url) {
   var div = void 0;
 
   if (addToBody) {
-    div = document.createElement('div');
+    div = document_1.createElement('div');
     div.innerHTML = '<a href="' + url + '"></a>';
     a = div.firstChild;
     // prevent the div from affecting layout
     div.setAttribute('style', 'display:none; position:absolute;');
-    document.body.appendChild(div);
+    document_1.body.appendChild(div);
   }
 
   // Copy the specific URL properties to a new object
@@ -6885,11 +6961,11 @@ var parseUrl = function parseUrl(url) {
   }
 
   if (!details.protocol) {
-    details.protocol = window.location.protocol;
+    details.protocol = window_1.location.protocol;
   }
 
   if (addToBody) {
-    document.body.removeChild(div);
+    document_1.body.removeChild(div);
   }
 
   return details;
@@ -6911,7 +6987,7 @@ var getAbsoluteURL = function getAbsoluteURL(url) {
   // Check if absolute URL
   if (!url.match(/^https?:\/\//)) {
     // Convert to absolute URL. Flash hosted off-site needs an absolute URL.
-    var div = document.createElement('div');
+    var div = document_1.createElement('div');
 
     div.innerHTML = '<a href="' + url + '">x</a>';
     url = div.firstChild.href;
@@ -6954,7 +7030,7 @@ var getFileExtension = function getFileExtension(path) {
  *         Whether it is a cross domain request or not.
  */
 var isCrossOrigin = function isCrossOrigin(url) {
-  var winLoc = window.location;
+  var winLoc = window_1.location;
   var urlInfo = parseUrl(url);
 
   // IE8 protocol relative urls will return ':' for protocol
@@ -6974,6 +7050,369 @@ var Url = (Object.freeze || Object)({
 	isCrossOrigin: isCrossOrigin
 });
 
+var isFunction_1 = isFunction;
+
+var toString$1 = Object.prototype.toString;
+
+function isFunction (fn) {
+  var string = toString$1.call(fn);
+  return string === '[object Function]' ||
+    (typeof fn === 'function' && string !== '[object RegExp]') ||
+    (typeof window !== 'undefined' &&
+     // IE8 and below
+     (fn === window.setTimeout ||
+      fn === window.alert ||
+      fn === window.confirm ||
+      fn === window.prompt))
+}
+
+var trim_1 = createCommonjsModule(function (module, exports) {
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+});
+
+var forEach_1 = forEach;
+
+var toString$2 = Object.prototype.toString;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function forEach(list, iterator, context) {
+    if (!isFunction_1(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this;
+    }
+    
+    if (toString$2.call(list) === '[object Array]')
+        forEachArray$1(list, iterator, context);
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context);
+    else
+        forEachObject(list, iterator, context);
+}
+
+function forEachArray$1(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array);
+        }
+    }
+}
+
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string);
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object);
+        }
+    }
+}
+
+var isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    };
+
+var parseHeaders = function (headers) {
+  if (!headers)
+    return {}
+
+  var result = {};
+
+  forEach_1(
+      trim_1(headers).split('\n')
+    , function (row) {
+        var index = row.indexOf(':')
+          , key = trim_1(row.slice(0, index)).toLowerCase()
+          , value = trim_1(row.slice(index + 1));
+
+        if (typeof(result[key]) === 'undefined') {
+          result[key] = value;
+        } else if (isArray(result[key])) {
+          result[key].push(value);
+        } else {
+          result[key] = [ result[key], value ];
+        }
+      }
+  );
+
+  return result
+};
+
+var immutable = extend;
+
+var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {};
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+            if (hasOwnProperty$1.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+
+    return target
+}
+
+var xhr = createXHR;
+createXHR.XMLHttpRequest = window_1.XMLHttpRequest || noop;
+createXHR.XDomainRequest = "withCredentials" in (new createXHR.XMLHttpRequest()) ? createXHR.XMLHttpRequest : window_1.XDomainRequest;
+
+forEachArray(["get", "put", "post", "patch", "head", "delete"], function(method) {
+    createXHR[method === "delete" ? "del" : method] = function(uri, options, callback) {
+        options = initParams(uri, options, callback);
+        options.method = method.toUpperCase();
+        return _createXHR(options)
+    };
+});
+
+function forEachArray(array, iterator) {
+    for (var i = 0; i < array.length; i++) {
+        iterator(array[i]);
+    }
+}
+
+function isEmpty(obj){
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)) return false
+    }
+    return true
+}
+
+function initParams(uri, options, callback) {
+    var params = uri;
+
+    if (isFunction_1(options)) {
+        callback = options;
+        if (typeof uri === "string") {
+            params = {uri:uri};
+        }
+    } else {
+        params = immutable(options, {uri: uri});
+    }
+
+    params.callback = callback;
+    return params
+}
+
+function createXHR(uri, options, callback) {
+    options = initParams(uri, options, callback);
+    return _createXHR(options)
+}
+
+function _createXHR(options) {
+    if(typeof options.callback === "undefined"){
+        throw new Error("callback argument missing")
+    }
+
+    var called = false;
+    var callback = function cbOnce(err, response, body){
+        if(!called){
+            called = true;
+            options.callback(err, response, body);
+        }
+    };
+
+    function readystatechange() {
+        if (xhr.readyState === 4) {
+            setTimeout(loadFunc, 0);
+        }
+    }
+
+    function getBody() {
+        // Chrome with requestType=blob throws errors arround when even testing access to responseText
+        var body = undefined;
+
+        if (xhr.response) {
+            body = xhr.response;
+        } else {
+            body = xhr.responseText || getXml(xhr);
+        }
+
+        if (isJson) {
+            try {
+                body = JSON.parse(body);
+            } catch (e) {}
+        }
+
+        return body
+    }
+
+    function errorFunc(evt) {
+        clearTimeout(timeoutTimer);
+        if(!(evt instanceof Error)){
+            evt = new Error("" + (evt || "Unknown XMLHttpRequest Error") );
+        }
+        evt.statusCode = 0;
+        return callback(evt, failureResponse)
+    }
+
+    // will load the data & process the response in a special response object
+    function loadFunc() {
+        if (aborted) return
+        var status;
+        clearTimeout(timeoutTimer);
+        if(options.useXDR && xhr.status===undefined) {
+            //IE8 CORS GET successful response doesn't have a status field, but body is fine
+            status = 200;
+        } else {
+            status = (xhr.status === 1223 ? 204 : xhr.status);
+        }
+        var response = failureResponse;
+        var err = null;
+
+        if (status !== 0){
+            response = {
+                body: getBody(),
+                statusCode: status,
+                method: method,
+                headers: {},
+                url: uri,
+                rawRequest: xhr
+            };
+            if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
+                response.headers = parseHeaders(xhr.getAllResponseHeaders());
+            }
+        } else {
+            err = new Error("Internal XMLHttpRequest Error");
+        }
+        return callback(err, response, response.body)
+    }
+
+    var xhr = options.xhr || null;
+
+    if (!xhr) {
+        if (options.cors || options.useXDR) {
+            xhr = new createXHR.XDomainRequest();
+        }else{
+            xhr = new createXHR.XMLHttpRequest();
+        }
+    }
+
+    var key;
+    var aborted;
+    var uri = xhr.url = options.uri || options.url;
+    var method = xhr.method = options.method || "GET";
+    var body = options.body || options.data;
+    var headers = xhr.headers = options.headers || {};
+    var sync = !!options.sync;
+    var isJson = false;
+    var timeoutTimer;
+    var failureResponse = {
+        body: undefined,
+        headers: {},
+        statusCode: 0,
+        method: method,
+        url: uri,
+        rawRequest: xhr
+    };
+
+    if ("json" in options && options.json !== false) {
+        isJson = true;
+        headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json"); //Don't override existing accept header declared by user
+        if (method !== "GET" && method !== "HEAD") {
+            headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json"); //Don't override existing accept header declared by user
+            body = JSON.stringify(options.json === true ? body : options.json);
+        }
+    }
+
+    xhr.onreadystatechange = readystatechange;
+    xhr.onload = loadFunc;
+    xhr.onerror = errorFunc;
+    // IE9 must have onprogress be set to a unique function.
+    xhr.onprogress = function () {
+        // IE must die
+    };
+    xhr.onabort = function(){
+        aborted = true;
+    };
+    xhr.ontimeout = errorFunc;
+    xhr.open(method, uri, !sync, options.username, options.password);
+    //has to be after open
+    if(!sync) {
+        xhr.withCredentials = !!options.withCredentials;
+    }
+    // Cannot set timeout with sync request
+    // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
+    // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
+    if (!sync && options.timeout > 0 ) {
+        timeoutTimer = setTimeout(function(){
+            if (aborted) return
+            aborted = true;//IE9 may still call readystatechange
+            xhr.abort("timeout");
+            var e = new Error("XMLHttpRequest timeout");
+            e.code = "ETIMEDOUT";
+            errorFunc(e);
+        }, options.timeout );
+    }
+
+    if (xhr.setRequestHeader) {
+        for(key in headers){
+            if(headers.hasOwnProperty(key)){
+                xhr.setRequestHeader(key, headers[key]);
+            }
+        }
+    } else if (options.headers && !isEmpty(options.headers)) {
+        throw new Error("Headers cannot be set on an XDomainRequest object")
+    }
+
+    if ("responseType" in options) {
+        xhr.responseType = options.responseType;
+    }
+
+    if ("beforeSend" in options &&
+        typeof options.beforeSend === "function"
+    ) {
+        options.beforeSend(xhr);
+    }
+
+    // Microsoft Edge browser sends "undefined" when send is called with undefined value.
+    // XMLHttpRequest spec says to pass null as body to indicate no body
+    // See https://github.com/naugtur/xhr/issues/100.
+    xhr.send(body || null);
+
+    return xhr
+
+
+}
+
+function getXml(xhr) {
+    if (xhr.responseType === "document") {
+        return xhr.responseXML
+    }
+    var firefoxBugTakenEffect = xhr.responseXML && xhr.responseXML.documentElement.nodeName === "parsererror";
+    if (xhr.responseType === "" && !firefoxBugTakenEffect) {
+        return xhr.responseXML
+    }
+
+    return null
+}
+
+function noop() {}
+
 /**
  * @file text-track.js
  */
@@ -6989,7 +7428,7 @@ var Url = (Object.freeze || Object)({
  * @private
  */
 var parseCues = function parseCues(srcContent, track) {
-  var parser = new window.WebVTT.Parser(window, window.vttjs, window.WebVTT.StringDecoder());
+  var parser = new window_1.WebVTT.Parser(window_1, window_1.vttjs, window_1.WebVTT.StringDecoder());
   var errors = [];
 
   parser.oncue = function (cue) {
@@ -7009,14 +7448,14 @@ var parseCues = function parseCues(srcContent, track) {
 
   parser.parse(srcContent);
   if (errors.length > 0) {
-    if (window.console && window.console.groupCollapsed) {
-      window.console.groupCollapsed('Text Track parsing errors for ' + track.src);
+    if (window_1.console && window_1.console.groupCollapsed) {
+      window_1.console.groupCollapsed('Text Track parsing errors for ' + track.src);
     }
     errors.forEach(function (error) {
       return log$1.error(error);
     });
-    if (window.console && window.console.groupEnd) {
-      window.console.groupEnd();
+    if (window_1.console && window_1.console.groupEnd) {
+      window_1.console.groupEnd();
     }
   }
 
@@ -7053,7 +7492,7 @@ var loadTrack = function loadTrack(src, track) {
 
     // Make sure that vttjs has loaded, otherwise, wait till it finished loading
     // NOTE: this is only used for the alt/video.novtt.js build
-    if (typeof window.WebVTT !== 'function') {
+    if (typeof window_1.WebVTT !== 'function') {
       if (track.tech_) {
         var loadHandler = function loadHandler() {
           return parseCues(responseBody, track);
@@ -7318,8 +7757,8 @@ var TextTrack = function (_Track) {
   TextTrack.prototype.addCue = function addCue(originalCue) {
     var cue = originalCue;
 
-    if (window.vttjs && !(originalCue instanceof window.vttjs.VTTCue)) {
-      cue = new window.vttjs.VTTCue(originalCue.startTime, originalCue.endTime, originalCue.text);
+    if (window_1.vttjs && !(originalCue instanceof window_1.vttjs.VTTCue)) {
+      cue = new window_1.vttjs.VTTCue(originalCue.startTime, originalCue.endTime, originalCue.text);
 
       for (var prop in originalCue) {
         if (!(prop in cue)) {
@@ -7649,7 +8088,7 @@ var HTMLTrackElement = function (_EventTarget) {
     var trackElement = _this; // eslint-disable-line
 
     if (IS_IE8) {
-      trackElement = document.createElement('custom');
+      trackElement = document_1.createElement('custom');
 
       for (var prop in HTMLTrackElement.prototype) {
         if (prop !== 'constructor') {
@@ -7776,6 +8215,8 @@ var ALL = mergeOptions(NORMAL, REMOTE);
 REMOTE.names = Object.keys(REMOTE);
 NORMAL.names = Object.keys(NORMAL);
 ALL.names = [].concat(REMOTE.names).concat(NORMAL.names);
+
+var vtt = {};
 
 /**
  * @file tech.js
@@ -8330,14 +8771,14 @@ var Tech = function (_Component) {
   Tech.prototype.addWebVttScript_ = function addWebVttScript_() {
     var _this4 = this;
 
-    if (window.WebVTT) {
+    if (window_1.WebVTT) {
       return;
     }
 
     // Initially, Tech.el_ is a child of a dummy-div wait until the Component system
     // signals that the Tech is ready at which point Tech.el_ is part of the DOM
     // before inserting the WebVTT script
-    if (document.body.contains(this.el())) {
+    if (document_1.body.contains(this.el())) {
 
       // load via require if available and vtt.js script location was not passed in
       // as an option. novtt builds will turn the above require call into an empty object
@@ -8349,7 +8790,7 @@ var Tech = function (_Component) {
 
       // load vtt.js via the script location option or the cdn of no location was
       // passed in
-      var script = document.createElement('script');
+      var script = document_1.createElement('script');
 
       script.src = this.options_['vtt.js'] || 'https://vjs.zencdn.net/vttjs/0.12.4/vtt.min.js';
       script.onload = function () {
@@ -8376,7 +8817,7 @@ var Tech = function (_Component) {
       });
       // but have not loaded yet and we set it to true before the inject so that
       // we don't overwrite the injected window.WebVTT if it loads right away
-      window.WebVTT = true;
+      window_1.WebVTT = true;
       this.el().parentNode.appendChild(script);
     } else {
       this.ready(this.addWebVttScript_);
@@ -8739,9 +9180,9 @@ var Tech = function (_Component) {
       return Tech.techs_[name];
     }
 
-    if (window && window.videojs && window.videojs[name]) {
+    if (window_1 && window_1.videojs && window_1.videojs[name]) {
       log$1.warn('The ' + name + ' tech was added to the videojs object when it should be registered using videojs.registerTech(name, tech)');
-      return window.videojs[name];
+      return window_1.videojs[name];
     }
   };
 
@@ -9628,7 +10069,7 @@ var ClickableComponent = function (_Component) {
 
 
   ClickableComponent.prototype.handleFocus = function handleFocus(event) {
-    on(document, 'keydown', bind(this, this.handleKeyPress));
+    on(document_1, 'keydown', bind(this, this.handleKeyPress));
   };
 
   /**
@@ -9667,7 +10108,7 @@ var ClickableComponent = function (_Component) {
 
 
   ClickableComponent.prototype.handleBlur = function handleBlur(event) {
-    off(document, 'keydown', bind(this, this.handleKeyPress));
+    off(document_1, 'keydown', bind(this, this.handleKeyPress));
   };
 
   return ClickableComponent;
@@ -10038,8 +10479,8 @@ var TextTrackDisplay = function (_Component) {
 
 
   TextTrackDisplay.prototype.clearDisplay = function clearDisplay() {
-    if (typeof window.WebVTT === 'function') {
-      window.WebVTT.processCues(window, [], this.el_);
+    if (typeof window_1.WebVTT === 'function') {
+      window_1.WebVTT.processCues(window_1, [], this.el_);
     }
   };
 
@@ -10099,7 +10540,7 @@ var TextTrackDisplay = function (_Component) {
 
 
   TextTrackDisplay.prototype.updateForTrack = function updateForTrack(track) {
-    if (typeof window.WebVTT !== 'function' || !track.activeCues) {
+    if (typeof window_1.WebVTT !== 'function' || !track.activeCues) {
       return;
     }
 
@@ -10110,7 +10551,7 @@ var TextTrackDisplay = function (_Component) {
       cues.push(track.activeCues[_i]);
     }
 
-    window.WebVTT.processCues(window, cues, this.el_);
+    window_1.WebVTT.processCues(window_1, cues, this.el_);
 
     var i = cues.length;
 
@@ -10154,7 +10595,7 @@ var TextTrackDisplay = function (_Component) {
         }
       }
       if (overrides.fontPercent && overrides.fontPercent !== 1) {
-        var fontSize = window.parseFloat(cueDiv.style.fontSize);
+        var fontSize = window_1.parseFloat(cueDiv.style.fontSize);
 
         cueDiv.style.fontSize = fontSize * overrides.fontPercent + 'px';
         cueDiv.style.height = 'auto';
@@ -10829,7 +11270,7 @@ var TimeDisplay = function (_Component) {
       this.contentEl_.removeChild(this.contentEl_.firstChild);
     }
 
-    this.textNode_ = document.createTextNode(this.formattedTime_ || '0:00');
+    this.textNode_ = document_1.createTextNode(this.formattedTime_ || '0:00');
     this.contentEl_.appendChild(this.textNode_);
   };
 
@@ -13963,7 +14404,7 @@ var MenuButton = function (_Component) {
 
 
   MenuButton.prototype.handleFocus = function handleFocus() {
-    on(document, 'keydown', bind(this, this.handleKeyPress));
+    on(document_1, 'keydown', bind(this, this.handleKeyPress));
   };
 
   /**
@@ -13978,7 +14419,7 @@ var MenuButton = function (_Component) {
 
 
   MenuButton.prototype.handleBlur = function handleBlur() {
-    off(document, 'keydown', bind(this, this.handleKeyPress));
+    off(document_1, 'keydown', bind(this, this.handleKeyPress));
   };
 
   /**
@@ -14348,17 +14789,17 @@ var TextTrackMenuItem = function (_MenuItem) {
       var event = void 0;
 
       _this.on(['tap', 'click'], function () {
-        if (_typeof(window.Event) !== 'object') {
+        if (_typeof(window_1.Event) !== 'object') {
           // Android 2.3 throws an Illegal Constructor error for window.Event
           try {
-            event = new window.Event('change');
+            event = new window_1.Event('change');
           } catch (err) {
             // continue regardless of error
           }
         }
 
         if (!event) {
-          event = document.createEvent('Event');
+          event = document_1.createEvent('Event');
           event.initEvent('change', true, true);
         }
 
@@ -16583,7 +17024,7 @@ var TextTrackSettings = function (_ModalDialog) {
     var values = void 0;
 
     try {
-      values = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY));
+      values = JSON.parse(window_1.localStorage.getItem(LOCAL_STORAGE_KEY));
     } catch (err) {
       log$1.warn(err);
     }
@@ -16607,9 +17048,9 @@ var TextTrackSettings = function (_ModalDialog) {
 
     try {
       if (Object.keys(values).length) {
-        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
+        window_1.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
       } else {
-        window.localStorage.removeItem(LOCAL_STORAGE_KEY);
+        window_1.localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } catch (err) {
       log$1.warn(err);
@@ -16638,7 +17079,7 @@ var TextTrackSettings = function (_ModalDialog) {
 
   TextTrackSettings.prototype.conditionalBlur_ = function conditionalBlur_() {
     this.previouslyActiveEl_ = null;
-    this.off(document, 'keydown', this.handleKeyDown);
+    this.off(document_1, 'keydown', this.handleKeyDown);
 
     var cb = this.player_.controlBar;
     var subsCapsBtn = cb && cb.subsCapsButton;
@@ -16695,7 +17136,7 @@ var ResizeManager = function (_Component) {
   function ResizeManager(player, options) {
     classCallCheck(this, ResizeManager);
 
-    var RESIZE_OBSERVER_AVAILABLE = options.ResizeObserver || window.ResizeObserver;
+    var RESIZE_OBSERVER_AVAILABLE = options.ResizeObserver || window_1.ResizeObserver;
 
     // if `null` was passed, we want to disable the ResizeObserver
     if (options.ResizeObserver === null) {
@@ -16707,7 +17148,7 @@ var ResizeManager = function (_Component) {
 
     var _this = possibleConstructorReturn(this, _Component.call(this, player, options_));
 
-    _this.ResizeObserver = options.ResizeObserver || window.ResizeObserver;
+    _this.ResizeObserver = options.ResizeObserver || window_1.ResizeObserver;
     _this.loadListener_ = null;
     _this.resizeObserver_ = null;
     _this.debouncedHandler_ = debounce(function () {
@@ -17065,7 +17506,7 @@ var Html5 = function (_Tech) {
         Html5.disposeMediaElement(el);
         el = clone;
       } else {
-        el = document.createElement('video');
+        el = document_1.createElement('video');
 
         // determine if native controls should be used
         var tagAttributes = this.options_.tag && getAttributes(this.options_.tag);
@@ -17329,7 +17770,7 @@ var Html5 = function (_Tech) {
 
   Html5.prototype.supportsFullScreen = function supportsFullScreen() {
     if (typeof this.el_.webkitEnterFullScreen === 'function') {
-      var userAgent = window.navigator && window.navigator.userAgent || '';
+      var userAgent = window_1.navigator && window_1.navigator.userAgent || '';
 
       // Seems to be broken in Chromium/Chrome && Safari in Leopard
       if (/Android/.test(userAgent) || !/Chrome|Mac OS X 10.5/.test(userAgent)) {
@@ -17494,7 +17935,7 @@ var Html5 = function (_Tech) {
     if (!this.featuresNativeTextTracks) {
       return _Tech.prototype.createRemoteTextTrack.call(this, options);
     }
-    var htmlTrackElement = document.createElement('track');
+    var htmlTrackElement = document_1.createElement('track');
 
     if (options.kind) {
       htmlTrackElement.kind = options.kind;
@@ -17589,10 +18030,10 @@ var Html5 = function (_Tech) {
       videoPlaybackQuality.totalVideoFrames = this.el().webkitDecodedFrameCount;
     }
 
-    if (window.performance && typeof window.performance.now === 'function') {
-      videoPlaybackQuality.creationTime = window.performance.now();
-    } else if (window.performance && window.performance.timing && typeof window.performance.timing.navigationStart === 'number') {
-      videoPlaybackQuality.creationTime = window.Date.now() - window.performance.timing.navigationStart;
+    if (window_1.performance && typeof window_1.performance.now === 'function') {
+      videoPlaybackQuality.creationTime = window_1.performance.now();
+    } else if (window_1.performance && window_1.performance.timing && typeof window_1.performance.timing.navigationStart === 'number') {
+      videoPlaybackQuality.creationTime = window_1.Date.now() - window_1.performance.timing.navigationStart;
     }
 
     return videoPlaybackQuality;
@@ -17612,8 +18053,8 @@ if (isReal()) {
    * @constant
    * @private
    */
-  Html5.TEST_VID = document.createElement('video');
-  var track = document.createElement('track');
+  Html5.TEST_VID = document_1.createElement('video');
+  var track = document_1.createElement('track');
 
   track.kind = 'captions';
   track.srclang = 'en';
@@ -19104,7 +19545,7 @@ var Player = function (_Component) {
 
     if (divEmbed) {
       el = this.el_ = tag;
-      tag = this.tag = document.createElement('video');
+      tag = this.tag = document_1.createElement('video');
       while (el.children.length) {
         tag.appendChild(el.firstChild);
       }
@@ -19158,7 +19599,7 @@ var Player = function (_Component) {
     // Add a style element in the player that we'll use to set the width/height
     // of the player in a way that's still overrideable by CSS, just like the
     // video element
-    if (window.VIDEOJS_NO_DYNAMIC_STYLE !== true) {
+    if (window_1.VIDEOJS_NO_DYNAMIC_STYLE !== true) {
       this.styleEl_ = createStyleElement('vjs-styles-dimensions');
       var defaultsStyleEl = $('.vjs-styles-defaults');
       var head = $('head');
@@ -19360,7 +19801,7 @@ var Player = function (_Component) {
 
 
   Player.prototype.updateStyleEl_ = function updateStyleEl_() {
-    if (window.VIDEOJS_NO_DYNAMIC_STYLE === true) {
+    if (window_1.VIDEOJS_NO_DYNAMIC_STYLE === true) {
       var _width = typeof this.width_ === 'number' ? this.width_ : this.options_.width;
       var _height = typeof this.height_ === 'number' ? this.height_ : this.options_.height;
       var techEl = this.tech_ && this.tech_.el();
@@ -20769,12 +21210,12 @@ var Player = function (_Component) {
       // when canceling fullscreen. Otherwise if there's multiple
       // players on a page, they would all be reacting to the same fullscreen
       // events
-      on(document, fsApi.fullscreenchange, bind(this, function documentFullscreenChange(e) {
-        this.isFullscreen(document[fsApi.fullscreenElement]);
+      on(document_1, fsApi.fullscreenchange, bind(this, function documentFullscreenChange(e) {
+        this.isFullscreen(document_1[fsApi.fullscreenElement]);
 
         // If cancelling fullscreen, remove event listener.
         if (this.isFullscreen() === false) {
-          off(document, fsApi.fullscreenchange, documentFullscreenChange);
+          off(document_1, fsApi.fullscreenchange, documentFullscreenChange);
         }
         /**
          * @event Player#fullscreenchange
@@ -20814,7 +21255,7 @@ var Player = function (_Component) {
 
     // Check for browser element fullscreen support
     if (fsApi.requestFullscreen) {
-      document[fsApi.exitFullscreen]();
+      document_1[fsApi.exitFullscreen]();
     } else if (this.tech_.supportsFullScreen()) {
       this.techCall_('exitFullScreen');
     } else {
@@ -20839,16 +21280,16 @@ var Player = function (_Component) {
     this.isFullWindow = true;
 
     // Storing original doc overflow value to return to when fullscreen is off
-    this.docOrigOverflow = document.documentElement.style.overflow;
+    this.docOrigOverflow = document_1.documentElement.style.overflow;
 
     // Add listener for esc key to exit fullscreen
-    on(document, 'keydown', bind(this, this.fullWindowOnEscKey));
+    on(document_1, 'keydown', bind(this, this.fullWindowOnEscKey));
 
     // Hide any scroll bars
-    document.documentElement.style.overflow = 'hidden';
+    document_1.documentElement.style.overflow = 'hidden';
 
     // Apply fullscreen styles
-    addClass(document.body, 'vjs-full-window');
+    addClass(document_1.body, 'vjs-full-window');
 
     /**
      * @event Player#enterFullWindow
@@ -20885,13 +21326,13 @@ var Player = function (_Component) {
 
   Player.prototype.exitFullWindow = function exitFullWindow() {
     this.isFullWindow = false;
-    off(document, 'keydown', this.fullWindowOnEscKey);
+    off(document_1, 'keydown', this.fullWindowOnEscKey);
 
     // Unhide scroll bars.
-    document.documentElement.style.overflow = this.docOrigOverflow;
+    document_1.documentElement.style.overflow = this.docOrigOverflow;
 
     // Remove fullscreen styles
-    removeClass(document.body, 'vjs-full-window');
+    removeClass(document_1.body, 'vjs-full-window');
 
     // Resize the box, controller, and poster to original sizes
     // this.positionAll();
@@ -22073,7 +22514,7 @@ var Player = function (_Component) {
     if (dataSetup !== null) {
       // Parse options JSON
       // If empty string, make it a parsable json object.
-      var _safeParseTuple = safeParseTuple(dataSetup || '{}'),
+      var _safeParseTuple = tuple(dataSetup || '{}'),
           err = _safeParseTuple[0],
           data = _safeParseTuple[1];
 
@@ -22115,7 +22556,7 @@ var Player = function (_Component) {
 
 
   Player.prototype.flexNotSupported_ = function flexNotSupported_() {
-    var elem = document.createElement('i');
+    var elem = document_1.createElement('i');
 
     // Note: We don't actually use flexBasis (or flexOrder), but it's one of the more
     // common flex features that we can rely on when checking for flex support.
@@ -22198,7 +22639,7 @@ ALL.names.forEach(function (name$$1) {
  */
 Player.players = {};
 
-var navigator = window.navigator;
+var navigator = window_1.navigator;
 
 /*
  * Player instance options, surfaced using options
@@ -23023,10 +23464,10 @@ var extendFn = function extendFn(superClass) {
 // Include the built-in techs
 // HTML5 Element Shim for IE8
 if (typeof HTMLVideoElement === 'undefined' && isReal()) {
-  document.createElement('video');
-  document.createElement('audio');
-  document.createElement('track');
-  document.createElement('video-js');
+  document_1.createElement('video');
+  document_1.createElement('audio');
+  document_1.createElement('track');
+  document_1.createElement('video-js');
 }
 
 /**
@@ -23078,7 +23519,7 @@ function videojs(id, options, ready) {
     throw new TypeError('The element or ID supplied is not valid. (videojs)');
   }
 
-  if (!document.body.contains(el)) {
+  if (!document_1.body.contains(el)) {
     log$1.warn('The element supplied is not included in the DOM');
   }
 
@@ -23194,7 +23635,7 @@ videojs.removeHook = function (type, fn) {
 };
 
 // Add default styles
-if (window.VIDEOJS_NO_DYNAMIC_STYLE !== true && isReal()) {
+if (window_1.VIDEOJS_NO_DYNAMIC_STYLE !== true && isReal()) {
   var style = $('.vjs-styles-defaults');
 
   if (!style) {
@@ -23799,4 +24240,6 @@ videojs.dom = Dom;
  */
 videojs.url = Url;
 
-export default videojs;
+return videojs;
+
+})));

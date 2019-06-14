@@ -4297,7 +4297,7 @@ var Component = function () {
    * @listens Component#touchleave
    * @listens Component#touchcancel
    * @listens Component#touchend
-     */
+    */
 
 
   Component.prototype.emitTapEvents = function emitTapEvents() {
@@ -14119,46 +14119,46 @@ Component.registerComponent('MenuButton', MenuButton);
  */
 
 var TrackButton = function (_MenuButton) {
-    inherits(TrackButton, _MenuButton);
+  inherits(TrackButton, _MenuButton);
 
-    /**
-     * Creates an instance of this class.
-     *
-     * @param {Player} player
-     *        The `Player` that this class should be attached to.
-     *
-     * @param {Object} [options]
-     *        The key/value store of player options.
-     */
-    function TrackButton(player, options) {
-        classCallCheck(this, TrackButton);
+  /**
+   * Creates an instance of this class.
+   *
+   * @param {Player} player
+   *        The `Player` that this class should be attached to.
+   *
+   * @param {Object} [options]
+   *        The key/value store of player options.
+   */
+  function TrackButton(player, options) {
+    classCallCheck(this, TrackButton);
 
-        var tracks = options.tracks;
+    var tracks = options.tracks;
 
-        var _this = possibleConstructorReturn(this, _MenuButton.call(this, player, options));
+    var _this = possibleConstructorReturn(this, _MenuButton.call(this, player, options));
 
-        if (_this.items.length <= 1) {
-            _this.hide();
-        }
-
-        if (!tracks) {
-            return possibleConstructorReturn(_this);
-        }
-
-        var updateHandler = bind(_this, _this.update);
-
-        tracks.addEventListener('removetrack', updateHandler);
-        tracks.addEventListener('addtrack', updateHandler);
-        _this.player_.on('ready', updateHandler);
-
-        _this.player_.on('dispose', function () {
-            tracks.removeEventListener('removetrack', updateHandler);
-            tracks.removeEventListener('addtrack', updateHandler);
-        });
-        return _this;
+    if (_this.items.length <= 1) {
+      _this.hide();
     }
 
-    return TrackButton;
+    if (!tracks) {
+      return possibleConstructorReturn(_this);
+    }
+
+    var updateHandler = bind(_this, _this.update);
+
+    tracks.addEventListener('removetrack', updateHandler);
+    tracks.addEventListener('addtrack', updateHandler);
+    _this.player_.on('ready', updateHandler);
+
+    _this.player_.on('dispose', function () {
+      tracks.removeEventListener('removetrack', updateHandler);
+      tracks.removeEventListener('addtrack', updateHandler);
+    });
+    return _this;
+  }
+
+  return TrackButton;
 }(MenuButton);
 
 Component.registerComponent('TrackButton', TrackButton);
@@ -21178,6 +21178,16 @@ var Player = function (_Component) {
   Player.prototype.reset = function reset() {
     this.loadTech_(this.options_.techOrder[0], null);
     this.techCall_('reset');
+  };
+
+  /**
+   * CUSTOM METHOD
+   * Removes any sources from the underlying video.
+   */
+
+
+  Player.prototype.resetSource = function resetSource() {
+    this.techCall_('resetSource');
   };
 
   /**

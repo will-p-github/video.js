@@ -2490,6 +2490,14 @@ class Player extends Component {
   }
 
   /**
+   * CUSTOM METHOD
+   * Removes any sources from the underlying video.
+   */
+  resetSource() {
+    this.techCall_('resetSource');
+  }
+
+  /**
    * Returns all of the current source objects.
    *
    * @return {Tech~SourceObject[]}
