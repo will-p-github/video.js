@@ -1841,7 +1841,7 @@ class Player extends Component {
   duration(seconds) {
     if (seconds === undefined) {
       // return NaN if the duration is not known
-      return this.cache_.duration !== undefined ? this.cache_.duration : NaN;
+      return this.techGet_('duration') || NaN;
     }
 
     seconds = parseFloat(seconds);
