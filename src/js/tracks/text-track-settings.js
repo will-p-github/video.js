@@ -2,7 +2,6 @@
  * @file text-track-settings.js
  */
 import window from 'global/window';
-import document from 'global/document';
 import Component from '../component';
 import ModalDialog from '../modal-dialog';
 import {createEl} from '../utils/dom';
@@ -313,19 +312,20 @@ class TextTrackSettings extends ModalDialog {
   createElSelect_(key, legendId = '', type = 'label') {
     const config = selectConfigs[key];
     const id = config.id.replace('%s', this.id_);
+    const selectLabelledbyIds = [legendId, id].join(' ').trim();
 
     return [
       `<${type} id="${id}" class="${type === 'label' ? 'vjs-label' : ''}">`,
       this.localize(config.label),
       `</${type}>`,
-      `<select aria-labelledby="${legendId !== '' ? legendId + ' ' : ''}${id}">`
+      `<select aria-labelledby="${selectLabelledbyIds}">`
     ].
       concat(config.options.map(o => {
-        const optionId = id + '-' + o[1];
+        const optionId = id + '-' + o[1].replace(/\W+/g, '');
 
         return [
           `<option id="${optionId}" value="${o[0]}" `,
-          `aria-labelledby="${legendId !== '' ? legendId + ' ' : ''}${id} ${optionId}">`,
+          `aria-labelledby="${selectLabelledbyIds} ${optionId}">`,
           this.localize(o[1]),
           '</option>'
         ].join('');
@@ -463,11 +463,11 @@ class TextTrackSettings extends ModalDialog {
     return createEl('div', {
       className: 'vjs-track-settings-controls',
       innerHTML: [
-        `<button class="vjs-default-button" title="${defaultsDescription}">`,
+        `<button type="button" class="vjs-default-button" title="${defaultsDescription}">`,
         this.localize('Reset'),
         `<span class="vjs-control-text"> ${defaultsDescription}</span>`,
         '</button>',
-        `<button class="vjs-done-button">${this.localize('Done')}</button>`
+        `<button type="button" class="vjs-done-button">${this.localize('Done')}</button>`
       ].join('')
     });
   }
@@ -589,7 +589,6 @@ class TextTrackSettings extends ModalDialog {
    */
   conditionalBlur_() {
     this.previouslyActiveEl_ = null;
-    this.off(document, 'keydown', this.handleKeyDown);
 
     const cb = this.player_.controlBar;
     const subsCapsBtn = cb && cb.subsCapsButton;

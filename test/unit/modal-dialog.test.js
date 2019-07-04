@@ -5,7 +5,11 @@ import ModalDialog from '../../src/js/modal-dialog';
 import * as Dom from '../../src/js/utils/dom';
 import TestHelpers from './test-helpers';
 
-const ESC = 27;
+const getMockEscapeEvent = () => ({
+  which: 27,
+  preventDefault() {},
+  stopPropagation() {}
+});
 
 QUnit.module('ModalDialog', {
 
@@ -80,6 +84,8 @@ const tabTestHelper = function(assert, player) {
       shiftKey: shift,
       preventDefault() {
         prevented = true;
+      },
+      stopPropagation() {
       }
     });
 
@@ -233,12 +239,12 @@ QUnit.test('pressing ESC triggers close(), but only when the modal is opened', f
   const spy = sinon.spy();
 
   this.modal.on('modalclose', spy);
-  this.modal.handleKeyPress({which: ESC});
+  this.modal.handleKeyDown(getMockEscapeEvent());
   assert.expect(2);
   assert.strictEqual(spy.callCount, 0, 'ESC did not close the closed modal');
 
   this.modal.open();
-  this.modal.handleKeyPress({which: ESC});
+  this.modal.handleKeyDown(getMockEscapeEvent());
   assert.strictEqual(spy.callCount, 1, 'ESC closed the now-opened modal');
 });
 
@@ -417,7 +423,7 @@ QUnit.test('closeable()', function(assert) {
   assert.notOk(this.modal.getChild('closeButton'), 'the close button is no longer a child of the modal');
   assert.notOk(initialCloseButton.el(), 'the initial close button was disposed');
 
-  this.modal.handleKeyPress({which: ESC});
+  this.modal.handleKeyDown(getMockEscapeEvent());
   assert.ok(this.modal.opened(), 'the modal was not closed by the ESC key');
 
   this.modal.close();
@@ -431,7 +437,7 @@ QUnit.test('closeable()', function(assert) {
   assert.notOk(this.modal.opened(), 'the modal was closed by the new close button');
 
   this.modal.open();
-  this.modal.handleKeyPress({which: ESC});
+  this.modal.handleKeyDown(getMockEscapeEvent());
   assert.notOk(this.modal.opened(), 'the modal was closed by the ESC key');
 });
 
@@ -452,6 +458,7 @@ QUnit.test('"content" option (fills on first open() invocation)', function(asser
   assert.strictEqual(modal.content(), modal.options_.content, 'has the expected content');
   assert.strictEqual(spy.callCount, 1, 'auto-fills only once');
   assert.strictEqual(modal.contentEl().firstChild, modal.options_.content, 'has the expected content in the DOM');
+  modal.dispose();
 });
 
 QUnit.test('"temporary" option', function(assert) {
@@ -470,6 +477,9 @@ QUnit.test('"temporary" option', function(assert) {
   assert.expect(2);
   assert.strictEqual(tempSpy.callCount, 1, 'temporary modals are disposed');
   assert.strictEqual(permSpy.callCount, 0, 'permanent modals are not disposed');
+
+  temp.dispose();
+  perm.dispose();
 });
 
 QUnit.test('"fillAlways" option', function(assert) {
@@ -488,6 +498,7 @@ QUnit.test('"fillAlways" option', function(assert) {
 
   assert.expect(1);
   assert.strictEqual(spy.callCount, 2, 'the modal was filled on each open call');
+  modal.dispose();
 });
 
 QUnit.test('"label" option', function(assert) {
@@ -496,6 +507,7 @@ QUnit.test('"label" option', function(assert) {
 
   assert.expect(1);
   assert.strictEqual(modal.el().getAttribute('aria-label'), label, 'uses the label as the aria-label');
+  modal.dispose();
 });
 
 QUnit.test('"uncloseable" option', function(assert) {
@@ -513,8 +525,9 @@ QUnit.test('"uncloseable" option', function(assert) {
   assert.notOk(modal.getChild('closeButton'), 'the close button is not present');
 
   modal.open();
-  modal.handleKeyPress({which: ESC});
+  modal.handleKeyDown(getMockEscapeEvent());
   assert.strictEqual(spy.callCount, 0, 'ESC did not close the modal');
+  modal.dispose();
 });
 
 QUnit.test('handleKeyDown traps tab focus', function(assert) {

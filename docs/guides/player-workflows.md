@@ -19,6 +19,7 @@ This document outlines many considerations for using Video.js for advanced playe
   * [React](#react)
   * [Ember](#ember)
   * [Angular](#angular)
+  * [Vue](#vue)
 
 ## Accessing a player that has already been created on a page
 
@@ -31,9 +32,9 @@ After an instance has been created it can be accessed globally in two ways:
 
 No matter the term used for it, web applications are becoming common. Not everything is a static, load-once-and-done web page anymore! This means that developers need to be able to manage the full lifecycle of a video player - from creation to destruction. Video.js supports player removal through the `dispose()` method.
 
-### [`dispose()`](http://docs.videojs.com/Player.html#dispose)
+### [`dispose()`](https://docs.videojs.com/Player.html#dispose)
 
-This method is available on all Video.js players and [components](http://docs.videojs.com/Component.html#dispose). It is _the only_ supported method of removing a Video.js player from both the DOM and memory. For example, the following code sets up a player and then disposes it when media playback is complete:
+This method is available on all Video.js players and [components](https://docs.videojs.com/Component.html#dispose). It is _the only_ supported method of removing a Video.js player from both the DOM and memory. For example, the following code sets up a player and then disposes it when media playback is complete:
 
 ```js
 var player = videojs('my-player');
@@ -371,3 +372,7 @@ See [ReactJS integration example](/docs/guides/react.md)
 ### Ember
 
 ### Angular
+
+### Vue
+
+See [Vue integration example](/docs/guides/vue.md)

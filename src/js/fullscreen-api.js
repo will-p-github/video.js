@@ -22,7 +22,8 @@ const apiMap = [
     'fullscreenElement',
     'fullscreenEnabled',
     'fullscreenchange',
-    'fullscreenerror'
+    'fullscreenerror',
+    'fullscreen'
   ],
   // WebKit
   [
@@ -31,16 +32,8 @@ const apiMap = [
     'webkitFullscreenElement',
     'webkitFullscreenEnabled',
     'webkitfullscreenchange',
-    'webkitfullscreenerror'
-  ],
-  // Old WebKit (Safari 5.1)
-  [
-    'webkitRequestFullScreen',
-    'webkitCancelFullScreen',
-    'webkitCurrentFullScreenElement',
-    'webkitCancelFullScreen',
-    'webkitfullscreenchange',
-    'webkitfullscreenerror'
+    'webkitfullscreenerror',
+    '-webkit-full-screen'
   ],
   // Mozilla
   [
@@ -49,7 +42,8 @@ const apiMap = [
     'mozFullScreenElement',
     'mozFullScreenEnabled',
     'mozfullscreenchange',
-    'mozfullscreenerror'
+    'mozfullscreenerror',
+    '-moz-full-screen'
   ],
   // Microsoft
   [
@@ -58,12 +52,14 @@ const apiMap = [
     'msFullscreenElement',
     'msFullscreenEnabled',
     'MSFullscreenChange',
-    'MSFullscreenError'
+    'MSFullscreenError',
+    '-ms-fullscreen'
   ]
 ];
 
 const specApi = apiMap[0];
 let browserApi;
+let prefixedAPI = false;
 
 // determine the supported set of functions
 for (let i = 0; i < apiMap.length; i++) {
@@ -79,6 +75,9 @@ if (browserApi) {
   for (let i = 0; i < browserApi.length; i++) {
     FullscreenApi[specApi[i]] = browserApi[i];
   }
+
+  prefixedAPI = browserApi[0] === specApi[0];
 }
 
 export default FullscreenApi;
+export { prefixedAPI };

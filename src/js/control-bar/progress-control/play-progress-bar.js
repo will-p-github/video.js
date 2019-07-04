@@ -2,8 +2,7 @@
  * @file play-progress-bar.js
  */
 import Component from '../../component.js';
-import {IE_VERSION, IS_IOS, IS_ANDROID} from '../../utils/browser.js';
-import formatTime from '../../utils/format-time.js';
+import {IS_IOS, IS_ANDROID} from '../../utils/browser.js';
 
 import './time-tooltip';
 
@@ -23,8 +22,9 @@ class PlayProgressBar extends Component {
    */
   createEl() {
     return super.createEl('div', {
-      className: 'vjs-play-progress vjs-slider-bar',
-      innerHTML: `<span class="vjs-control-text"><span>${this.localize('Progress')}</span>: 0%</span>`
+      className: 'vjs-play-progress vjs-slider-bar'
+    }, {
+      'aria-hidden': 'true'
     });
   }
 
@@ -45,18 +45,17 @@ class PlayProgressBar extends Component {
       this.cancelAnimationFrame(this.rafId_);
     }
 
-    this.rafId_ = this.requestAnimationFrame(() => {
-      const time = (this.player_.scrubbing()) ?
-        this.player_.getCache().currentTime :
-        this.player_.currentTime();
+    const timeTooltip = this.getChild('timeTooltip');
 
-      const content = formatTime(time, this.player_.duration());
-      const timeTooltip = this.getChild('timeTooltip');
+    if (!timeTooltip) {
+      return;
+    }
 
-      if (timeTooltip) {
-        timeTooltip.update(seekBarRect, seekBarPoint, content);
-      }
-    });
+    const time = (this.player_.scrubbing()) ?
+      this.player_.getCache().currentTime :
+      this.player_.currentTime();
+
+    timeTooltip.updateTime(seekBarRect, seekBarPoint, time);
   }
 }
 
@@ -70,8 +69,8 @@ PlayProgressBar.prototype.options_ = {
   children: []
 };
 
-// Time tooltips should not be added to a player on mobile devices or IE8
-if ((!IE_VERSION || IE_VERSION > 8) && !IS_IOS && !IS_ANDROID) {
+// Time tooltips should not be added to a player on mobile devices
+if (!IS_IOS && !IS_ANDROID) {
   PlayProgressBar.prototype.options_.children.push('timeTooltip');
 }
 

@@ -12,7 +12,7 @@ import Component from './component';
  */
 class CloseButton extends Button {
 
- /**
+  /**
   * Creates an instance of the this class.
   *
   * @param  {Player} player
@@ -26,7 +26,7 @@ class CloseButton extends Button {
     this.controlText(options && options.controlText || this.localize('Close'));
   }
 
- /**
+  /**
   * Builds the default DOM `className`.
   *
   * @return {string}
@@ -38,8 +38,8 @@ class CloseButton extends Button {
 
   /**
    * This gets called when a `CloseButton` gets clicked. See
-   * {@link ClickableComponent#handleClick} for more information on when this will be
-   * triggered
+   * {@link ClickableComponent#handleClick} for more information on when
+   * this will be triggered
    *
    * @param {EventTarget~Event} event
    *        The `keydown`, `tap`, or `click` event that caused this function to be

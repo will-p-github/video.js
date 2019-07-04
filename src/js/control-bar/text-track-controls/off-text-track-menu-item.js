@@ -25,6 +25,9 @@ class OffTextTrackMenuItem extends TextTrackMenuItem {
     // Requires options['kind']
     options.track = {
       player,
+      // it is no longer necessary to store `kind` or `kinds` on the track itself
+      // since they are now stored in the `kinds` property of all instances of
+      // TextTrackMenuItem, but this will remain for backwards compatibility
       kind: options.kind,
       kinds: options.kinds,
       default: false,
@@ -43,6 +46,8 @@ class OffTextTrackMenuItem extends TextTrackMenuItem {
 
     // MenuItem is selectable
     options.selectable = true;
+    // MenuItem is NOT multiSelectable (i.e. only one can be marked "selected" at a time)
+    options.multiSelectable = false;
 
     super(player, options);
   }

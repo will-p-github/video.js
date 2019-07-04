@@ -4,9 +4,9 @@
  * This should work very similarly to jQuery's events, however it's based off the book version which isn't as
  * robust as jquery's, so there's probably some differences.
  *
+ * @file events.js
  * @module events
  */
-
 import * as DomData from './dom-data';
 import * as Guid from './guid.js';
 import log from './log.js';
@@ -398,8 +398,8 @@ export function off(elem, type, fn) {
  *        data hash to pass along with the event
  *
  * @return {boolean|undefined}
- *         - Returns the opposite of `defaultPrevented` if default was prevented
- *         - Otherwise returns undefined
+ *         Returns the opposite of `defaultPrevented` if default was
+ *         prevented. Otherwise, returns `undefined`
  */
 export function trigger(elem, event, hash) {
   // Fetches element data and a reference to the parent (for bubbling).
@@ -407,13 +407,16 @@ export function trigger(elem, event, hash) {
   // so checking hasElData first.
   const elemData = (DomData.hasData(elem)) ? DomData.getData(elem) : {};
   const parent = elem.parentNode || elem.ownerDocument;
-      // type = event.type || event,
-      // handler;
+  // type = event.type || event,
+  // handler;
 
   // If an event name was passed as a string, creates an event out of it
   if (typeof event === 'string') {
     event = {type: event, target: elem};
+  } else if (!event.target) {
+    event.target = elem;
   }
+
   // Normalizes the event properties.
   event = fixEvent(event);
 
@@ -428,7 +431,7 @@ export function trigger(elem, event, hash) {
     trigger.call(null, parent, event, hash);
 
   // If at the top of the DOM, triggers the default action unless disabled.
-  } else if (!parent && !event.defaultPrevented) {
+  } else if (!parent && !event.defaultPrevented && event.target && event.target[event.type]) {
     const targetData = DomData.getData(event.target);
 
     // Checks if the target has a default action for this event.
@@ -449,7 +452,7 @@ export function trigger(elem, event, hash) {
 }
 
 /**
- * Trigger a listener only once for an event
+ * Trigger a listener only once for an event.
  *
  * @param {Element|Object} elem
  *        Element or object to bind to.
@@ -458,7 +461,7 @@ export function trigger(elem, event, hash) {
  *        Name/type of event
  *
  * @param {Event~EventListener} fn
- *        Event Listener function
+ *        Event listener function
  */
 export function one(elem, type, fn) {
   if (Array.isArray(type)) {
