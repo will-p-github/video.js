@@ -4232,10 +4232,17 @@
 
     _proto.handleKeyDown = function handleKeyDown(event) {
       if (this.player_) {
-        //  THIS IS BREKAING US!
+        // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
         // // We only stop propagation here because we want unhandled events to fall
         // // back to the browser.
-        event.stopPropagation();
+        // event.stopPropagation();
         this.player_.handleKeyDown(event);
       }
     }
@@ -6098,9 +6105,16 @@
     ;
 
     _proto.handleKeyDown = function handleKeyDown(event) {
-      // Do not allow keydowns to reach out of the modal dialog.
-      event.stopPropagation();
-
+      // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+      // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+      // See more here:
+      // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+      // - https://github.com/videojs/video.js/pull/5969
+      // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+      // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+      // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+      // // Do not allow keydowns to reach out of the modal dialog.
+      // event.stopPropagation();
       if (keycode.isEventKey(event, 'Escape') && this.closeable()) {
         event.preventDefault();
         this.close();
@@ -13305,8 +13319,16 @@
       // prevent the event from propagating through the DOM and triggering
       // Player hotkeys.
       if (keycode.isEventKey(event, 'Space') || keycode.isEventKey(event, 'Enter')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
+
         this.trigger('click');
       } else {
         // Pass keypress handling up for unsupported keys
@@ -13986,7 +14008,15 @@
       // hotkeys. We do not preventDefault here because we _want_ the browser to
       // handle it.
       if (keycode.isEventKey(event, 'Space') || keycode.isEventKey(event, 'Enter')) {
-        event.stopPropagation();
+        // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
         return;
       } // Pass keypress handling up for unsupported keys
 
@@ -15474,12 +15504,28 @@
     _proto.handleKeyDown = function handleKeyDown(event) {
       // Left and Down Arrows
       if (keycode.isEventKey(event, 'Left') || keycode.isEventKey(event, 'Down')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
+
         this.stepBack(); // Up and Right Arrows
       } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
+
         this.stepForward();
       } else {
         // Pass keydown handling up for unsupported keys
@@ -16384,30 +16430,38 @@
     ;
 
     _proto.handleKeyDown = function handleKeyDown(event) {
+      // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+      // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+      // See more here:
+      // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+      // - https://github.com/videojs/video.js/pull/5969
+      // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+      // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+      // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       if (keycode.isEventKey(event, 'Space') || keycode.isEventKey(event, 'Enter')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         this.handleAction(event);
       } else if (keycode.isEventKey(event, 'Home')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         this.player_.currentTime(0);
       } else if (keycode.isEventKey(event, 'End')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         this.player_.currentTime(this.player_.duration());
       } else if (/^[0-9]$/.test(keycode(event))) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         var gotoFraction = (keycode.codes[keycode(event)] - keycode.codes['0']) * 10.0 / 100.0;
         this.player_.currentTime(this.player_.duration() * gotoFraction);
       } else if (keycode.isEventKey(event, 'PgDn')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         this.player_.currentTime(this.player_.currentTime() - STEP_SECONDS * PAGE_KEY_MULTIPLIER);
       } else if (keycode.isEventKey(event, 'PgUp')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // event.stopPropagation();
+
         this.player_.currentTime(this.player_.currentTime() + STEP_SECONDS * PAGE_KEY_MULTIPLIER);
       } else {
         // Pass keydown handling up for unsupported keys
@@ -17705,12 +17759,28 @@
     _proto.handleKeyDown = function handleKeyDown(event) {
       // Left and Down Arrows
       if (keycode.isEventKey(event, 'Left') || keycode.isEventKey(event, 'Down')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
+
         this.stepForward(); // Up and Right Arrows
       } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
-        event.preventDefault();
-        event.stopPropagation();
+        event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+        // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+        // See more here:
+        // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+        // - https://github.com/videojs/video.js/pull/5969
+        // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+        // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+        // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+        // event.stopPropagation();
+
         this.stepBack();
       }
     }
