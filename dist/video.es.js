@@ -12710,13 +12710,10 @@ function (_Slider) {
     // via an interval
 
 
-    this.updateInterval = null; // MIGRATION TODO: is this needed??
-    // this.on(player, ['playing'], this.enableUpdates);
-    // this.on(player, ['ended', 'pause', 'waiting'], this.disableUpdates);
-    // this.on(player, ['timeupdate', 'ended'], this.update);
-
-    this.on(this.player_, ['playing'], this.enableInterval_);
-    this.on(this.player_, ['ended', 'pause', 'waiting'], this.disableInterval_); // we don't need to update the play progress if the document is hidden,
+    this.updateInterval = null;
+    this.on(this.player_, ['playing'], this.enableUpdates);
+    this.on(this.player_, ['ended', 'pause', 'waiting'], this.disableUpdates);
+    this.on(this.player_, ['timeupdate', 'ended'], this.update); // we don't need to update the play progress if the document is hidden,
     // also, this causes the CPU to spike and eventually crash the page on IE11.
 
     if ('hidden' in document && 'visibilityState' in document) {
@@ -12726,29 +12723,42 @@ function (_Slider) {
 
   _proto.toggleVisibility_ = function toggleVisibility_(e) {
     if (document.hidden) {
-      this.disableInterval_(e);
+      this.enableUpdates(e);
     } else {
-      this.enableInterval_(); // we just switched back to the page and someone may be looking, so, update ASAP
+      this.disableUpdates(); // we just switched back to the page and someone may be looking, so, update ASAP
 
       this.requestAnimationFrame(this.update);
     }
-  };
+  }
+  /**
+   * Enable updates of the progress bar
+   */
+  ;
 
-  _proto.enableInterval_ = function enableInterval_() {
+  _proto.enableUpdates = function enableUpdates() {
     var _this2 = this;
 
-    this.clearInterval(this.updateInterval);
-    this.updateInterval = this.setInterval(function () {
-      _this2.requestAnimationFrame(_this2.update);
-    }, UPDATE_REFRESH_INTERVAL);
-  };
-
-  _proto.disableInterval_ = function disableInterval_(e) {
-    if (this.player_.liveTracker && this.player_.liveTracker.isLive() && e.type !== 'ended') {
-      return;
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
     }
 
-    this.clearInterval(this.updateInterval);
+    this.updateInterval = this.setInterval(function () {
+      _this2.requestAnimationFrame(function () {
+        _this2.update();
+      });
+    }, UPDATE_REFRESH_INTERVAL);
+  }
+  /**
+   * Disable updates of the progress bar
+   */
+  ;
+
+  _proto.disableUpdates = function disableUpdates() {
+    if (this.updateInterval !== null) {
+      this.clearInterval(this.updateInterval);
+    }
+
+    this.updateInterval = null;
   }
   /**
    * Create the `Component`'s DOM element
@@ -12764,30 +12774,7 @@ function (_Slider) {
     }, {
       'aria-label': this.localize('Progress Bar')
     });
-  } // MIGRATION TODO: is this needed??
-  //   /**
-  //    * Enable updates of the progress bar
-  //    */
-  //   enableUpdates() {
-  //     if (this.updateInterval !== null) {
-  //       this.clearInterval(this.updateInterval);
-  //     }
-  //     this.updateInterval = this.setInterval(() =>{
-  //       this.requestAnimationFrame(() => {
-  //         this.update();
-  //       });
-  //     }, UPDATE_REFRESH_INTERVAL);
-  //   }
-  //   /**
-  //    * Disable updates of the progress bar
-  //    */
-  //   disableUpdates() {
-  //     if (this.updateInterval !== null) {
-  //       this.clearInterval(this.updateInterval);
-  //     }
-  //     this.updateInterval = null;
-  //   }
-
+  }
   /**
    * This function updates the play progress bar and accessibility
    * attributes to whatever is passed in.
@@ -12833,21 +12820,20 @@ function (_Slider) {
   ;
 
   _proto.update = function update(event) {
-    // MIGRATION TODO: is this needed??
-    // let percent;
-    // if (this.updateInterval !== null) {
-    //   percent = super.update();
-    //   this.update_(this.getCurrentTime_(), percent);
-    // } else {
-    //   percent = 0;
-    // }
     // if the offsetParent is null, then this element is hidden, in which case
     // we don't need to update it.
     if (this.el().offsetParent === null) {
       return;
     }
 
-    var percent = _Slider.prototype.update.call(this);
+    var percent;
+
+    if (this.updateInterval !== null) {
+      percent = _Slider.prototype.update.call(this);
+      this.update_(this.getCurrentTime_(), percent);
+    } else {
+      percent = 0;
+    }
 
     return percent;
   }
