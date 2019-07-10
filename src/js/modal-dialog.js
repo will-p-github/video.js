@@ -446,8 +446,16 @@ class ModalDialog extends Component {
    */
   handleKeyDown(event) {
 
-    // Do not allow keydowns to reach out of the modal dialog.
-    event.stopPropagation();
+    // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
+    // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
+    // See more here:
+    // - https://github.com/videojs/video.js/commit/79eadac2523094bdbc61a782d4ad10b72176cbcd
+    // - https://github.com/videojs/video.js/pull/5969
+    // The reasons to stop propagation don't seem to apply to our usecase, so it should be safe to leave this commented out.
+    // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
+    // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
+    // // Do not allow keydowns to reach out of the modal dialog.
+    // event.stopPropagation();
 
     if (keycode.isEventKey(event, 'Escape') && this.closeable()) {
       event.preventDefault();
