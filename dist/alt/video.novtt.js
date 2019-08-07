@@ -12763,7 +12763,9 @@ var SeekBar = function (_Slider) {
     }
 
     // Stop event propagation to prevent double fire in progress-control.js
-    event.stopPropagation();
+    if (event) {
+      event.stopPropagation();
+    }
     this.player_.scrubbing(true);
 
     this.videoWasPlaying = !this.player_.paused();
@@ -12834,7 +12836,9 @@ var SeekBar = function (_Slider) {
     _Slider.prototype.handleMouseUp.call(this, event);
 
     // Stop event propagation to prevent double fire in progress-control.js
-    event.stopPropagation();
+    if (event) {
+      event.stopPropagation();
+    }
     this.player_.scrubbing(false);
 
     /**
