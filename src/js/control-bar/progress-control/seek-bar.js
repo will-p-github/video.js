@@ -451,11 +451,15 @@ class SeekBar extends Slider {
     } else if (keycode.isEventKey(event, 'PgDn')) {
       event.preventDefault();
       // event.stopPropagation();
-      this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
+      
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else if (keycode.isEventKey(event, 'PgUp')) {
       event.preventDefault();
       // event.stopPropagation();
-      this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
+      
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else {
       // Pass keydown handling up for unsupported keys
       super.handleKeyDown(event);

@@ -225,7 +225,9 @@ class Menu extends Component {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-      this.stepForward();
+      
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepForward();
 
     // Up and Right Arrows
     } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
@@ -239,7 +241,9 @@ class Menu extends Component {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-      this.stepBack();
+      
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepBack();
     }
   }
 
