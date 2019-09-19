@@ -19,7 +19,7 @@ import './mouse-time-display.js';
 const STEP_SECONDS = 5;
 
 // The multiplier of STEP_SECONDS that PgUp/PgDown move the timeline.
-const PAGE_KEY_MULTIPLIER = 12;
+// const PAGE_KEY_MULTIPLIER = 12;
 
 // The interval at which the bar should update as it progresses.
 const UPDATE_REFRESH_INTERVAL = 30;
@@ -451,11 +451,15 @@ class SeekBar extends Slider {
     } else if (keycode.isEventKey(event, 'PgDn')) {
       event.preventDefault();
       // event.stopPropagation();
-      this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
+
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else if (keycode.isEventKey(event, 'PgUp')) {
       event.preventDefault();
       // event.stopPropagation();
-      this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
+
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else {
       // Pass keydown handling up for unsupported keys
       super.handleKeyDown(event);

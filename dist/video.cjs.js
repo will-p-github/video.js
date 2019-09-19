@@ -4266,7 +4266,7 @@ function () {
    * @listens Component#touchleave
    * @listens Component#touchcancel
    * @listens Component#touchend
-     */
+    */
   ;
 
   _proto.emitTapEvents = function emitTapEvents() {
@@ -12176,8 +12176,9 @@ function (_Component) {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-
-      this.stepBack(); // Up and Right Arrows
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepBack();
+      // Up and Right Arrows
     } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
       event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
       // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
@@ -12188,8 +12189,8 @@ function (_Component) {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-
-      this.stepForward();
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepForward();
     } else {
       // Pass keydown handling up for unsupported keys
       _Component.prototype.handleKeyDown.call(this, event);
@@ -12657,8 +12658,8 @@ MouseTimeDisplay.prototype.options_ = {
 Component.registerComponent('MouseTimeDisplay', MouseTimeDisplay);
 
 var STEP_SECONDS = 5; // The multiplier of STEP_SECONDS that PgUp/PgDown move the timeline.
-
-var PAGE_KEY_MULTIPLIER = 12; // The interval at which the bar should update as it progresses.
+// const PAGE_KEY_MULTIPLIER = 12;
+// The interval at which the bar should update as it progresses.
 
 var UPDATE_REFRESH_INTERVAL = 30;
 /**
@@ -13106,12 +13107,12 @@ function (_Slider) {
       this.player_.currentTime(this.player_.duration() * gotoFraction);
     } else if (keycode.isEventKey(event, 'PgDn')) {
       event.preventDefault(); // event.stopPropagation();
-
-      this.player_.currentTime(this.player_.currentTime() - STEP_SECONDS * PAGE_KEY_MULTIPLIER);
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else if (keycode.isEventKey(event, 'PgUp')) {
       event.preventDefault(); // event.stopPropagation();
-
-      this.player_.currentTime(this.player_.currentTime() + STEP_SECONDS * PAGE_KEY_MULTIPLIER);
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
     } else {
       // Pass keydown handling up for unsupported keys
       _Slider.prototype.handleKeyDown.call(this, event);
@@ -14417,8 +14418,9 @@ function (_Component) {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-
-      this.stepForward(); // Up and Right Arrows
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepForward();
+      // Up and Right Arrows
     } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
       event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
       // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
@@ -14429,8 +14431,8 @@ function (_Component) {
       // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
       // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
       // event.stopPropagation();
-
-      this.stepBack();
+      // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+      // this.stepBack();
     }
   }
   /**

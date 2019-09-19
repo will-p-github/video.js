@@ -4272,7 +4272,7 @@
      * @listens Component#touchleave
      * @listens Component#touchcancel
      * @listens Component#touchend
-       */
+      */
     ;
 
     _proto.emitTapEvents = function emitTapEvents() {
@@ -7288,550 +7288,23 @@
     fn === window.setTimeout || fn === window.alert || fn === window.confirm || fn === window.prompt);
   }
 
-  /* eslint no-invalid-this: 1 */
+  var trim_1 = createCommonjsModule(function (module, exports) {
+    exports = module.exports = trim;
 
-  var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-  var slice = Array.prototype.slice;
-  var toStr = Object.prototype.toString;
-  var funcType = '[object Function]';
-
-  var implementation = function bind(that) {
-    var target = this;
-
-    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
-      throw new TypeError(ERROR_MESSAGE + target);
+    function trim(str) {
+      return str.replace(/^\s*|\s*$/g, '');
     }
 
-    var args = slice.call(arguments, 1);
-    var bound;
-
-    var binder = function binder() {
-      if (this instanceof bound) {
-        var result = target.apply(this, args.concat(slice.call(arguments)));
-
-        if (Object(result) === result) {
-          return result;
-        }
-
-        return this;
-      } else {
-        return target.apply(that, args.concat(slice.call(arguments)));
-      }
+    exports.left = function (str) {
+      return str.replace(/^\s*/, '');
     };
 
-    var boundLength = Math.max(0, target.length - args.length);
-    var boundArgs = [];
-
-    for (var i = 0; i < boundLength; i++) {
-      boundArgs.push('$' + i);
-    }
-
-    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
-
-    if (target.prototype) {
-      var Empty = function Empty() {};
-
-      Empty.prototype = target.prototype;
-      bound.prototype = new Empty();
-      Empty.prototype = null;
-    }
-
-    return bound;
-  };
-
-  var functionBind = Function.prototype.bind || implementation;
-
-  var toStr$1 = Object.prototype.toString;
-
-  var isArguments = function isArguments(value) {
-    var str = toStr$1.call(value);
-    var isArgs = str === '[object Arguments]';
-
-    if (!isArgs) {
-      isArgs = str !== '[object Array]' && value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr$1.call(value.callee) === '[object Function]';
-    }
-
-    return isArgs;
-  };
-
-  var keysShim;
-
-  if (!Object.keys) {
-    // modified from https://github.com/es-shims/es5-shim
-    var has = Object.prototype.hasOwnProperty;
-    var toStr$2 = Object.prototype.toString;
-    var isArgs = isArguments; // eslint-disable-line global-require
-
-    var isEnumerable = Object.prototype.propertyIsEnumerable;
-    var hasDontEnumBug = !isEnumerable.call({
-      toString: null
-    }, 'toString');
-    var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
-    var dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
-
-    var equalsConstructorPrototype = function equalsConstructorPrototype(o) {
-      var ctor = o.constructor;
-      return ctor && ctor.prototype === o;
+    exports.right = function (str) {
+      return str.replace(/\s*$/, '');
     };
-
-    var excludedKeys = {
-      $applicationCache: true,
-      $console: true,
-      $external: true,
-      $frame: true,
-      $frameElement: true,
-      $frames: true,
-      $innerHeight: true,
-      $innerWidth: true,
-      $onmozfullscreenchange: true,
-      $onmozfullscreenerror: true,
-      $outerHeight: true,
-      $outerWidth: true,
-      $pageXOffset: true,
-      $pageYOffset: true,
-      $parent: true,
-      $scrollLeft: true,
-      $scrollTop: true,
-      $scrollX: true,
-      $scrollY: true,
-      $self: true,
-      $webkitIndexedDB: true,
-      $webkitStorageInfo: true,
-      $window: true
-    };
-
-    var hasAutomationEqualityBug = function () {
-      /* global window */
-      if (typeof window === 'undefined') {
-        return false;
-      }
-
-      for (var k in window) {
-        try {
-          if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-            try {
-              equalsConstructorPrototype(window[k]);
-            } catch (e) {
-              return true;
-            }
-          }
-        } catch (e) {
-          return true;
-        }
-      }
-
-      return false;
-    }();
-
-    var equalsConstructorPrototypeIfNotBuggy = function equalsConstructorPrototypeIfNotBuggy(o) {
-      /* global window */
-      if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
-        return equalsConstructorPrototype(o);
-      }
-
-      try {
-        return equalsConstructorPrototype(o);
-      } catch (e) {
-        return false;
-      }
-    };
-
-    keysShim = function keys(object) {
-      var isObject = object !== null && typeof object === 'object';
-      var isFunction = toStr$2.call(object) === '[object Function]';
-      var isArguments$$1 = isArgs(object);
-      var isString = isObject && toStr$2.call(object) === '[object String]';
-      var theKeys = [];
-
-      if (!isObject && !isFunction && !isArguments$$1) {
-        throw new TypeError('Object.keys called on a non-object');
-      }
-
-      var skipProto = hasProtoEnumBug && isFunction;
-
-      if (isString && object.length > 0 && !has.call(object, 0)) {
-        for (var i = 0; i < object.length; ++i) {
-          theKeys.push(String(i));
-        }
-      }
-
-      if (isArguments$$1 && object.length > 0) {
-        for (var j = 0; j < object.length; ++j) {
-          theKeys.push(String(j));
-        }
-      } else {
-        for (var name in object) {
-          if (!(skipProto && name === 'prototype') && has.call(object, name)) {
-            theKeys.push(String(name));
-          }
-        }
-      }
-
-      if (hasDontEnumBug) {
-        var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
-
-        for (var k = 0; k < dontEnums.length; ++k) {
-          if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
-            theKeys.push(dontEnums[k]);
-          }
-        }
-      }
-
-      return theKeys;
-    };
-  }
-
-  var implementation$1 = keysShim;
-
-  var slice$1 = Array.prototype.slice;
-  var origKeys = Object.keys;
-  var keysShim$1 = origKeys ? function keys(o) {
-    return origKeys(o);
-  } : implementation$1;
-  var originalKeys = Object.keys;
-
-  keysShim$1.shim = function shimObjectKeys() {
-    if (Object.keys) {
-      var keysWorksWithArguments = function () {
-        // Safari 5.0 bug
-        var args = Object.keys(arguments);
-        return args && args.length === arguments.length;
-      }(1, 2);
-
-      if (!keysWorksWithArguments) {
-        Object.keys = function keys(object) {
-          // eslint-disable-line func-name-matching
-          if (isArguments(object)) {
-            return originalKeys(slice$1.call(object));
-          }
-
-          return originalKeys(object);
-        };
-      }
-    } else {
-      Object.keys = keysShim$1;
-    }
-
-    return Object.keys || keysShim$1;
-  };
-
-  var objectKeys = keysShim$1;
-
-  var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
-  var toStr$3 = Object.prototype.toString;
-  var concat = Array.prototype.concat;
-  var origDefineProperty = Object.defineProperty;
-
-  var isFunction$1 = function isFunction(fn) {
-    return typeof fn === 'function' && toStr$3.call(fn) === '[object Function]';
-  };
-
-  var arePropertyDescriptorsSupported = function arePropertyDescriptorsSupported() {
-    var obj = {};
-
-    try {
-      origDefineProperty(obj, 'x', {
-        enumerable: false,
-        value: obj
-      }); // eslint-disable-next-line no-unused-vars, no-restricted-syntax
-
-      for (var _ in obj) {
-        // jscs:ignore disallowUnusedVariables
-        return false;
-      }
-
-      return obj.x === obj;
-    } catch (e) {
-      /* this is IE 8. */
-      return false;
-    }
-  };
-
-  var supportsDescriptors = origDefineProperty && arePropertyDescriptorsSupported();
-
-  var defineProperty = function defineProperty(object, name, value, predicate) {
-    if (name in object && (!isFunction$1(predicate) || !predicate())) {
-      return;
-    }
-
-    if (supportsDescriptors) {
-      origDefineProperty(object, name, {
-        configurable: true,
-        enumerable: false,
-        value: value,
-        writable: true
-      });
-    } else {
-      object[name] = value;
-    }
-  };
-
-  var defineProperties = function defineProperties(object, map) {
-    var predicates = arguments.length > 2 ? arguments[2] : {};
-    var props = objectKeys(map);
-
-    if (hasSymbols) {
-      props = concat.call(props, Object.getOwnPropertySymbols(map));
-    }
-
-    for (var i = 0; i < props.length; i += 1) {
-      defineProperty(object, props[i], map[props[i]], predicates[props[i]]);
-    }
-  };
-
-  defineProperties.supportsDescriptors = !!supportsDescriptors;
-  var defineProperties_1 = defineProperties;
-
-  /* globals
-  	Set,
-  	Map,
-  	WeakSet,
-  	WeakMap,
-
-  	Promise,
-
-  	Symbol,
-  	Proxy,
-
-  	Atomics,
-  	SharedArrayBuffer,
-
-  	ArrayBuffer,
-  	DataView,
-  	Uint8Array,
-  	Float32Array,
-  	Float64Array,
-  	Int8Array,
-  	Int16Array,
-  	Int32Array,
-  	Uint8ClampedArray,
-  	Uint16Array,
-  	Uint32Array,
-  */
-
-  var undefined$1; // eslint-disable-line no-shadow-restricted-names
-
-  var ThrowTypeError = Object.getOwnPropertyDescriptor ? function () {
-    return Object.getOwnPropertyDescriptor(arguments, 'callee').get;
-  }() : function () {
-    throw new TypeError();
-  };
-  var hasSymbols$1 = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
-
-  var getProto = Object.getPrototypeOf || function (x) {
-    return x.__proto__;
-  }; // eslint-disable-line no-proto
-
-  var generatorFunction = undefined$1;
-
-  var asyncFunction = undefined$1;
-
-  var asyncGenFunction = undefined$1;
-  var TypedArray = typeof Uint8Array === 'undefined' ? undefined$1 : getProto(Uint8Array);
-  var INTRINSICS = {
-    '$ %Array%': Array,
-    '$ %ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined$1 : ArrayBuffer,
-    '$ %ArrayBufferPrototype%': typeof ArrayBuffer === 'undefined' ? undefined$1 : ArrayBuffer.prototype,
-    '$ %ArrayIteratorPrototype%': hasSymbols$1 ? getProto([][Symbol.iterator]()) : undefined$1,
-    '$ %ArrayPrototype%': Array.prototype,
-    '$ %ArrayProto_entries%': Array.prototype.entries,
-    '$ %ArrayProto_forEach%': Array.prototype.forEach,
-    '$ %ArrayProto_keys%': Array.prototype.keys,
-    '$ %ArrayProto_values%': Array.prototype.values,
-    '$ %AsyncFromSyncIteratorPrototype%': undefined$1,
-    '$ %AsyncFunction%': asyncFunction,
-    '$ %AsyncFunctionPrototype%': undefined$1,
-    '$ %AsyncGenerator%': undefined$1,
-    '$ %AsyncGeneratorFunction%': asyncGenFunction,
-    '$ %AsyncGeneratorPrototype%': undefined$1,
-    '$ %AsyncIteratorPrototype%': undefined$1,
-    '$ %Atomics%': typeof Atomics === 'undefined' ? undefined$1 : Atomics,
-    '$ %Boolean%': Boolean,
-    '$ %BooleanPrototype%': Boolean.prototype,
-    '$ %DataView%': typeof DataView === 'undefined' ? undefined$1 : DataView,
-    '$ %DataViewPrototype%': typeof DataView === 'undefined' ? undefined$1 : DataView.prototype,
-    '$ %Date%': Date,
-    '$ %DatePrototype%': Date.prototype,
-    '$ %decodeURI%': decodeURI,
-    '$ %decodeURIComponent%': decodeURIComponent,
-    '$ %encodeURI%': encodeURI,
-    '$ %encodeURIComponent%': encodeURIComponent,
-    '$ %Error%': Error,
-    '$ %ErrorPrototype%': Error.prototype,
-    '$ %eval%': eval,
-    // eslint-disable-line no-eval
-    '$ %EvalError%': EvalError,
-    '$ %EvalErrorPrototype%': EvalError.prototype,
-    '$ %Float32Array%': typeof Float32Array === 'undefined' ? undefined$1 : Float32Array,
-    '$ %Float32ArrayPrototype%': typeof Float32Array === 'undefined' ? undefined$1 : Float32Array.prototype,
-    '$ %Float64Array%': typeof Float64Array === 'undefined' ? undefined$1 : Float64Array,
-    '$ %Float64ArrayPrototype%': typeof Float64Array === 'undefined' ? undefined$1 : Float64Array.prototype,
-    '$ %Function%': Function,
-    '$ %FunctionPrototype%': Function.prototype,
-    '$ %Generator%': undefined$1,
-    '$ %GeneratorFunction%': generatorFunction,
-    '$ %GeneratorPrototype%': undefined$1,
-    '$ %Int8Array%': typeof Int8Array === 'undefined' ? undefined$1 : Int8Array,
-    '$ %Int8ArrayPrototype%': typeof Int8Array === 'undefined' ? undefined$1 : Int8Array.prototype,
-    '$ %Int16Array%': typeof Int16Array === 'undefined' ? undefined$1 : Int16Array,
-    '$ %Int16ArrayPrototype%': typeof Int16Array === 'undefined' ? undefined$1 : Int8Array.prototype,
-    '$ %Int32Array%': typeof Int32Array === 'undefined' ? undefined$1 : Int32Array,
-    '$ %Int32ArrayPrototype%': typeof Int32Array === 'undefined' ? undefined$1 : Int32Array.prototype,
-    '$ %isFinite%': isFinite,
-    '$ %isNaN%': isNaN,
-    '$ %IteratorPrototype%': hasSymbols$1 ? getProto(getProto([][Symbol.iterator]())) : undefined$1,
-    '$ %JSON%': JSON,
-    '$ %JSONParse%': JSON.parse,
-    '$ %Map%': typeof Map === 'undefined' ? undefined$1 : Map,
-    '$ %MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols$1 ? undefined$1 : getProto(new Map()[Symbol.iterator]()),
-    '$ %MapPrototype%': typeof Map === 'undefined' ? undefined$1 : Map.prototype,
-    '$ %Math%': Math,
-    '$ %Number%': Number,
-    '$ %NumberPrototype%': Number.prototype,
-    '$ %Object%': Object,
-    '$ %ObjectPrototype%': Object.prototype,
-    '$ %ObjProto_toString%': Object.prototype.toString,
-    '$ %ObjProto_valueOf%': Object.prototype.valueOf,
-    '$ %parseFloat%': parseFloat,
-    '$ %parseInt%': parseInt,
-    '$ %Promise%': typeof Promise === 'undefined' ? undefined$1 : Promise,
-    '$ %PromisePrototype%': typeof Promise === 'undefined' ? undefined$1 : Promise.prototype,
-    '$ %PromiseProto_then%': typeof Promise === 'undefined' ? undefined$1 : Promise.prototype.then,
-    '$ %Promise_all%': typeof Promise === 'undefined' ? undefined$1 : Promise.all,
-    '$ %Promise_reject%': typeof Promise === 'undefined' ? undefined$1 : Promise.reject,
-    '$ %Promise_resolve%': typeof Promise === 'undefined' ? undefined$1 : Promise.resolve,
-    '$ %Proxy%': typeof Proxy === 'undefined' ? undefined$1 : Proxy,
-    '$ %RangeError%': RangeError,
-    '$ %RangeErrorPrototype%': RangeError.prototype,
-    '$ %ReferenceError%': ReferenceError,
-    '$ %ReferenceErrorPrototype%': ReferenceError.prototype,
-    '$ %Reflect%': typeof Reflect === 'undefined' ? undefined$1 : Reflect,
-    '$ %RegExp%': RegExp,
-    '$ %RegExpPrototype%': RegExp.prototype,
-    '$ %Set%': typeof Set === 'undefined' ? undefined$1 : Set,
-    '$ %SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols$1 ? undefined$1 : getProto(new Set()[Symbol.iterator]()),
-    '$ %SetPrototype%': typeof Set === 'undefined' ? undefined$1 : Set.prototype,
-    '$ %SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined$1 : SharedArrayBuffer,
-    '$ %SharedArrayBufferPrototype%': typeof SharedArrayBuffer === 'undefined' ? undefined$1 : SharedArrayBuffer.prototype,
-    '$ %String%': String,
-    '$ %StringIteratorPrototype%': hasSymbols$1 ? getProto(''[Symbol.iterator]()) : undefined$1,
-    '$ %StringPrototype%': String.prototype,
-    '$ %Symbol%': hasSymbols$1 ? Symbol : undefined$1,
-    '$ %SymbolPrototype%': hasSymbols$1 ? Symbol.prototype : undefined$1,
-    '$ %SyntaxError%': SyntaxError,
-    '$ %SyntaxErrorPrototype%': SyntaxError.prototype,
-    '$ %ThrowTypeError%': ThrowTypeError,
-    '$ %TypedArray%': TypedArray,
-    '$ %TypedArrayPrototype%': TypedArray ? TypedArray.prototype : undefined$1,
-    '$ %TypeError%': TypeError,
-    '$ %TypeErrorPrototype%': TypeError.prototype,
-    '$ %Uint8Array%': typeof Uint8Array === 'undefined' ? undefined$1 : Uint8Array,
-    '$ %Uint8ArrayPrototype%': typeof Uint8Array === 'undefined' ? undefined$1 : Uint8Array.prototype,
-    '$ %Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined$1 : Uint8ClampedArray,
-    '$ %Uint8ClampedArrayPrototype%': typeof Uint8ClampedArray === 'undefined' ? undefined$1 : Uint8ClampedArray.prototype,
-    '$ %Uint16Array%': typeof Uint16Array === 'undefined' ? undefined$1 : Uint16Array,
-    '$ %Uint16ArrayPrototype%': typeof Uint16Array === 'undefined' ? undefined$1 : Uint16Array.prototype,
-    '$ %Uint32Array%': typeof Uint32Array === 'undefined' ? undefined$1 : Uint32Array,
-    '$ %Uint32ArrayPrototype%': typeof Uint32Array === 'undefined' ? undefined$1 : Uint32Array.prototype,
-    '$ %URIError%': URIError,
-    '$ %URIErrorPrototype%': URIError.prototype,
-    '$ %WeakMap%': typeof WeakMap === 'undefined' ? undefined$1 : WeakMap,
-    '$ %WeakMapPrototype%': typeof WeakMap === 'undefined' ? undefined$1 : WeakMap.prototype,
-    '$ %WeakSet%': typeof WeakSet === 'undefined' ? undefined$1 : WeakSet,
-    '$ %WeakSetPrototype%': typeof WeakSet === 'undefined' ? undefined$1 : WeakSet.prototype
-  };
-
-  var GetIntrinsic = function GetIntrinsic(name, allowMissing) {
-    if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
-      throw new TypeError('"allowMissing" argument must be a boolean');
-    }
-
-    var key = '$ ' + name;
-
-    if (!(key in INTRINSICS)) {
-      throw new SyntaxError('intrinsic ' + name + ' does not exist!');
-    } // istanbul ignore if // hopefully this is impossible to test :-)
-
-
-    if (typeof INTRINSICS[key] === 'undefined' && !allowMissing) {
-      throw new TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
-    }
-
-    return INTRINSICS[key];
-  };
-
-  var src = functionBind.call(Function.call, Object.prototype.hasOwnProperty);
-
-  var $TypeError = GetIntrinsic('%TypeError%');
-  var $SyntaxError = GetIntrinsic('%SyntaxError%');
-  var predicates = {
-    // https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type
-    'Property Descriptor': function isPropertyDescriptor(ES, Desc) {
-      if (ES.Type(Desc) !== 'Object') {
-        return false;
-      }
-
-      var allowed = {
-        '[[Configurable]]': true,
-        '[[Enumerable]]': true,
-        '[[Get]]': true,
-        '[[Set]]': true,
-        '[[Value]]': true,
-        '[[Writable]]': true
-      };
-
-      for (var key in Desc) {
-        // eslint-disable-line
-        if (src(Desc, key) && !allowed[key]) {
-          return false;
-        }
-      }
-
-      var isData = src(Desc, '[[Value]]');
-      var IsAccessor = src(Desc, '[[Get]]') || src(Desc, '[[Set]]');
-
-      if (isData && IsAccessor) {
-        throw new $TypeError('Property Descriptors may not be both accessor and data descriptors');
-      }
-
-      return true;
-    }
-  };
-
-  var assertRecord = function assertRecord(ES, recordType, argumentName, value) {
-    var predicate = predicates[recordType];
-
-    if (typeof predicate !== 'function') {
-      throw new $SyntaxError('unknown record type: ' + recordType);
-    }
-
-    if (!predicate(ES, value)) {
-      throw new $TypeError(argumentName + ' must be a ' + recordType);
-    }
-
-    console.log(predicate(ES, value), value);
-  };
-
-  var _isNaN = Number.isNaN || function isNaN(a) {
-    return a !== a;
-  };
-
-  var $isNaN = Number.isNaN || function (a) {
-    return a !== a;
-  };
-
-  var _isFinite = Number.isFinite || function (x) {
-    return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity;
-  };
-
-  var sign = function sign(number) {
-    return number >= 0 ? 1 : -1;
-  };
-
-  var mod = function mod(number, modulo) {
-    var remain = number % modulo;
-    return Math.floor(remain >= 0 ? remain : remain + modulo);
-  };
+  });
+  var trim_2 = trim_1.left;
+  var trim_3 = trim_1.right;
 
   var fnToStr = Function.prototype.toString;
   var constructorRegex = /^\s*class\b/;
@@ -7858,7 +7331,7 @@
     }
   };
 
-  var toStr$4 = Object.prototype.toString;
+  var toStr = Object.prototype.toString;
   var fnClass = '[object Function]';
   var genClass = '[object GeneratorFunction]';
   var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
@@ -7884,346 +7357,11 @@
       return false;
     }
 
-    var strClass = toStr$4.call(value);
+    var strClass = toStr.call(value);
     return strClass === fnClass || strClass === genClass;
   };
 
-  var isPrimitive = function isPrimitive(value) {
-    return value === null || typeof value !== 'function' && typeof value !== 'object';
-  };
-
-  var toStr$5 = Object.prototype.toString; // http://ecma-international.org/ecma-262/5.1/#sec-8.12.8
-
-  var ES5internalSlots = {
-    '[[DefaultValue]]': function DefaultValue(O) {
-      var actualHint;
-
-      if (arguments.length > 1) {
-        actualHint = arguments[1];
-      } else {
-        actualHint = toStr$5.call(O) === '[object Date]' ? String : Number;
-      }
-
-      if (actualHint === String || actualHint === Number) {
-        var methods = actualHint === String ? ['toString', 'valueOf'] : ['valueOf', 'toString'];
-        var value, i;
-
-        for (i = 0; i < methods.length; ++i) {
-          if (isCallable(O[methods[i]])) {
-            value = O[methods[i]]();
-
-            if (isPrimitive(value)) {
-              return value;
-            }
-          }
-        }
-
-        throw new TypeError('No default value');
-      }
-
-      throw new TypeError('invalid [[DefaultValue]] hint supplied');
-    }
-  }; // http://ecma-international.org/ecma-262/5.1/#sec-9.1
-
-  var es5 = function ToPrimitive(input) {
-    if (isPrimitive(input)) {
-      return input;
-    }
-
-    if (arguments.length > 1) {
-      return ES5internalSlots['[[DefaultValue]]'](input, arguments[1]);
-    }
-
-    return ES5internalSlots['[[DefaultValue]]'](input);
-  };
-
-  var $Object = GetIntrinsic('%Object%');
-  var $TypeError$1 = GetIntrinsic('%TypeError%');
-  var $String = GetIntrinsic('%String%'); // https://es5.github.io/#x9
-
-  var ES5 = {
-    ToPrimitive: es5,
-    ToBoolean: function ToBoolean(value) {
-      return !!value;
-    },
-    ToNumber: function ToNumber(value) {
-      return +value; // eslint-disable-line no-implicit-coercion
-    },
-    ToInteger: function ToInteger(value) {
-      var number = this.ToNumber(value);
-
-      if (_isNaN(number)) {
-        return 0;
-      }
-
-      if (number === 0 || !_isFinite(number)) {
-        return number;
-      }
-
-      return sign(number) * Math.floor(Math.abs(number));
-    },
-    ToInt32: function ToInt32(x) {
-      return this.ToNumber(x) >> 0;
-    },
-    ToUint32: function ToUint32(x) {
-      return this.ToNumber(x) >>> 0;
-    },
-    ToUint16: function ToUint16(value) {
-      var number = this.ToNumber(value);
-
-      if (_isNaN(number) || number === 0 || !_isFinite(number)) {
-        return 0;
-      }
-
-      var posInt = sign(number) * Math.floor(Math.abs(number));
-      return mod(posInt, 0x10000);
-    },
-    ToString: function ToString(value) {
-      return $String(value);
-    },
-    ToObject: function ToObject(value) {
-      this.CheckObjectCoercible(value);
-      return $Object(value);
-    },
-    CheckObjectCoercible: function CheckObjectCoercible(value, optMessage) {
-      /* jshint eqnull:true */
-      if (value == null) {
-        throw new $TypeError$1(optMessage || 'Cannot call method on ' + value);
-      }
-
-      return value;
-    },
-    IsCallable: isCallable,
-    SameValue: function SameValue(x, y) {
-      if (x === y) {
-        // 0 === -0, but they are not identical.
-        if (x === 0) {
-          return 1 / x === 1 / y;
-        }
-
-        return true;
-      }
-
-      return _isNaN(x) && _isNaN(y);
-    },
-    // https://www.ecma-international.org/ecma-262/5.1/#sec-8
-    Type: function Type(x) {
-      if (x === null) {
-        return 'Null';
-      }
-
-      if (typeof x === 'undefined') {
-        return 'Undefined';
-      }
-
-      if (typeof x === 'function' || typeof x === 'object') {
-        return 'Object';
-      }
-
-      if (typeof x === 'number') {
-        return 'Number';
-      }
-
-      if (typeof x === 'boolean') {
-        return 'Boolean';
-      }
-
-      if (typeof x === 'string') {
-        return 'String';
-      }
-    },
-    // https://ecma-international.org/ecma-262/6.0/#sec-property-descriptor-specification-type
-    IsPropertyDescriptor: function IsPropertyDescriptor(Desc) {
-      if (this.Type(Desc) !== 'Object') {
-        return false;
-      }
-
-      var allowed = {
-        '[[Configurable]]': true,
-        '[[Enumerable]]': true,
-        '[[Get]]': true,
-        '[[Set]]': true,
-        '[[Value]]': true,
-        '[[Writable]]': true
-      };
-
-      for (var key in Desc) {
-        // eslint-disable-line
-        if (src(Desc, key) && !allowed[key]) {
-          return false;
-        }
-      }
-
-      var isData = src(Desc, '[[Value]]');
-      var IsAccessor = src(Desc, '[[Get]]') || src(Desc, '[[Set]]');
-
-      if (isData && IsAccessor) {
-        throw new $TypeError$1('Property Descriptors may not be both accessor and data descriptors');
-      }
-
-      return true;
-    },
-    // https://ecma-international.org/ecma-262/5.1/#sec-8.10.1
-    IsAccessorDescriptor: function IsAccessorDescriptor(Desc) {
-      if (typeof Desc === 'undefined') {
-        return false;
-      }
-
-      assertRecord(this, 'Property Descriptor', 'Desc', Desc);
-
-      if (!src(Desc, '[[Get]]') && !src(Desc, '[[Set]]')) {
-        return false;
-      }
-
-      return true;
-    },
-    // https://ecma-international.org/ecma-262/5.1/#sec-8.10.2
-    IsDataDescriptor: function IsDataDescriptor(Desc) {
-      if (typeof Desc === 'undefined') {
-        return false;
-      }
-
-      assertRecord(this, 'Property Descriptor', 'Desc', Desc);
-
-      if (!src(Desc, '[[Value]]') && !src(Desc, '[[Writable]]')) {
-        return false;
-      }
-
-      return true;
-    },
-    // https://ecma-international.org/ecma-262/5.1/#sec-8.10.3
-    IsGenericDescriptor: function IsGenericDescriptor(Desc) {
-      if (typeof Desc === 'undefined') {
-        return false;
-      }
-
-      assertRecord(this, 'Property Descriptor', 'Desc', Desc);
-
-      if (!this.IsAccessorDescriptor(Desc) && !this.IsDataDescriptor(Desc)) {
-        return true;
-      }
-
-      return false;
-    },
-    // https://ecma-international.org/ecma-262/5.1/#sec-8.10.4
-    FromPropertyDescriptor: function FromPropertyDescriptor(Desc) {
-      if (typeof Desc === 'undefined') {
-        return Desc;
-      }
-
-      assertRecord(this, 'Property Descriptor', 'Desc', Desc);
-
-      if (this.IsDataDescriptor(Desc)) {
-        return {
-          value: Desc['[[Value]]'],
-          writable: !!Desc['[[Writable]]'],
-          enumerable: !!Desc['[[Enumerable]]'],
-          configurable: !!Desc['[[Configurable]]']
-        };
-      } else if (this.IsAccessorDescriptor(Desc)) {
-        return {
-          get: Desc['[[Get]]'],
-          set: Desc['[[Set]]'],
-          enumerable: !!Desc['[[Enumerable]]'],
-          configurable: !!Desc['[[Configurable]]']
-        };
-      } else {
-        throw new $TypeError$1('FromPropertyDescriptor must be called with a fully populated Property Descriptor');
-      }
-    },
-    // https://ecma-international.org/ecma-262/5.1/#sec-8.10.5
-    ToPropertyDescriptor: function ToPropertyDescriptor(Obj) {
-      if (this.Type(Obj) !== 'Object') {
-        throw new $TypeError$1('ToPropertyDescriptor requires an object');
-      }
-
-      var desc = {};
-
-      if (src(Obj, 'enumerable')) {
-        desc['[[Enumerable]]'] = this.ToBoolean(Obj.enumerable);
-      }
-
-      if (src(Obj, 'configurable')) {
-        desc['[[Configurable]]'] = this.ToBoolean(Obj.configurable);
-      }
-
-      if (src(Obj, 'value')) {
-        desc['[[Value]]'] = Obj.value;
-      }
-
-      if (src(Obj, 'writable')) {
-        desc['[[Writable]]'] = this.ToBoolean(Obj.writable);
-      }
-
-      if (src(Obj, 'get')) {
-        var getter = Obj.get;
-
-        if (typeof getter !== 'undefined' && !this.IsCallable(getter)) {
-          throw new TypeError('getter must be a function');
-        }
-
-        desc['[[Get]]'] = getter;
-      }
-
-      if (src(Obj, 'set')) {
-        var setter = Obj.set;
-
-        if (typeof setter !== 'undefined' && !this.IsCallable(setter)) {
-          throw new $TypeError$1('setter must be a function');
-        }
-
-        desc['[[Set]]'] = setter;
-      }
-
-      if ((src(desc, '[[Get]]') || src(desc, '[[Set]]')) && (src(desc, '[[Value]]') || src(desc, '[[Writable]]'))) {
-        throw new $TypeError$1('Invalid property descriptor. Cannot both specify accessors and a value or writable attribute');
-      }
-
-      return desc;
-    }
-  };
-  var es5$1 = ES5;
-
-  var replace = functionBind.call(Function.call, String.prototype.replace);
-  var leftWhitespace = /^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/;
-  var rightWhitespace = /[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/;
-
-  var implementation$2 = function trim() {
-    var S = es5$1.ToString(es5$1.CheckObjectCoercible(this));
-    return replace(replace(S, leftWhitespace, ''), rightWhitespace, '');
-  };
-
-  var zeroWidthSpace = "\u200B";
-
-  var polyfill = function getPolyfill() {
-    if (String.prototype.trim && zeroWidthSpace.trim() === zeroWidthSpace) {
-      return String.prototype.trim;
-    }
-
-    return implementation$2;
-  };
-
-  var shim = function shimStringTrim() {
-    var polyfill$$1 = polyfill();
-    defineProperties_1(String.prototype, {
-      trim: polyfill$$1
-    }, {
-      trim: function trim() {
-        return String.prototype.trim !== polyfill$$1;
-      }
-    });
-    return polyfill$$1;
-  };
-
-  var boundTrim = functionBind.call(Function.call, polyfill());
-  defineProperties_1(boundTrim, {
-    getPolyfill: polyfill,
-    implementation: implementation$2,
-    shim: shim
-  });
-  var string_prototype_trim = boundTrim;
-
-  var toStr$6 = Object.prototype.toString;
+  var toStr$1 = Object.prototype.toString;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
   var forEachArray = function forEachArray(array, iterator, receiver) {
@@ -8272,7 +7410,7 @@
       receiver = thisArg;
     }
 
-    if (toStr$6.call(list) === '[object Array]') {
+    if (toStr$1.call(list) === '[object Array]') {
       forEachArray(list, iterator, receiver);
     } else if (typeof list === 'string') {
       forEachString(list, iterator, receiver);
@@ -8290,10 +7428,10 @@
   var parseHeaders = function parseHeaders(headers) {
     if (!headers) return {};
     var result = {};
-    forEach_1(string_prototype_trim(headers).split('\n'), function (row) {
+    forEach_1(trim_1(headers).split('\n'), function (row) {
       var index = row.indexOf(':'),
-          key = string_prototype_trim(row.slice(0, index)).toLowerCase(),
-          value = string_prototype_trim(row.slice(index + 1));
+          key = trim_1(row.slice(0, index)).toLowerCase(),
+          value = trim_1(row.slice(index + 1));
 
       if (typeof result[key] === 'undefined') {
         result[key] = value;
@@ -14426,7 +13564,7 @@
   }; // Internal pointer to the current implementation.
 
 
-  var implementation$3 = defaultImplementation;
+  var implementation = defaultImplementation;
   /**
    * Replaces the default formatTime implementation with a custom implementation.
    *
@@ -14437,14 +13575,14 @@
    */
 
   function setFormatTime(customImplementation) {
-    implementation$3 = customImplementation;
+    implementation = customImplementation;
   }
   /**
    * Resets formatTime to the default implementation.
    */
 
   function resetFormatTime() {
-    implementation$3 = defaultImplementation;
+    implementation = defaultImplementation;
   }
   /**
    * Delegates to either the default time formatting function or a custom
@@ -14471,7 +13609,7 @@
       guide = seconds;
     }
 
-    return implementation$3(seconds, guide);
+    return implementation(seconds, guide);
   }
 
   /**
@@ -15515,8 +14653,9 @@
         // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
         // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
         // event.stopPropagation();
-
-        this.stepBack(); // Up and Right Arrows
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.stepBack();
+        // Up and Right Arrows
       } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
         event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
         // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
@@ -15527,8 +14666,8 @@
         // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
         // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
         // event.stopPropagation();
-
-        this.stepForward();
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.stepForward();
       } else {
         // Pass keydown handling up for unsupported keys
         _Component.prototype.handleKeyDown.call(this, event);
@@ -15996,8 +15135,8 @@
   Component.registerComponent('MouseTimeDisplay', MouseTimeDisplay);
 
   var STEP_SECONDS = 5; // The multiplier of STEP_SECONDS that PgUp/PgDown move the timeline.
-
-  var PAGE_KEY_MULTIPLIER = 12; // The interval at which the bar should update as it progresses.
+  // const PAGE_KEY_MULTIPLIER = 12;
+  // The interval at which the bar should update as it progresses.
 
   var UPDATE_REFRESH_INTERVAL = 30;
   /**
@@ -16445,12 +15584,12 @@
         this.player_.currentTime(this.player_.duration() * gotoFraction);
       } else if (keycode.isEventKey(event, 'PgDn')) {
         event.preventDefault(); // event.stopPropagation();
-
-        this.player_.currentTime(this.player_.currentTime() - STEP_SECONDS * PAGE_KEY_MULTIPLIER);
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.player_.currentTime(this.player_.currentTime() - (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
       } else if (keycode.isEventKey(event, 'PgUp')) {
         event.preventDefault(); // event.stopPropagation();
-
-        this.player_.currentTime(this.player_.currentTime() + STEP_SECONDS * PAGE_KEY_MULTIPLIER);
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.player_.currentTime(this.player_.currentTime() + (STEP_SECONDS * PAGE_KEY_MULTIPLIER));
       } else {
         // Pass keydown handling up for unsupported keys
         _Slider.prototype.handleKeyDown.call(this, event);
@@ -17756,8 +16895,9 @@
         // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
         // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
         // event.stopPropagation();
-
-        this.stepForward(); // Up and Right Arrows
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.stepForward();
+        // Up and Right Arrows
       } else if (keycode.isEventKey(event, 'Right') || keycode.isEventKey(event, 'Up')) {
         event.preventDefault(); // Videojs 7.5.5 has added event stopPropagation throughout its components to fix some hotkeys behaviour, such as reacting to hotkeys insie of forms inside the player.
         // This broke our keyhandling implemenation, preventing any remote key presses from being handled.
@@ -17768,8 +16908,8 @@
         // If this causes problems in the future, the alternative solution would perhaps be to use rewrite our key handling to go through the hotkeys system:
         // https://github.com/videojs/video.js/blob/cf6e0e824814f3ccb061b057a9aa5eff3b54ba6e/docs/guides/options.md#useractionshotkeys
         // event.stopPropagation();
-
-        this.stepBack();
+        // (VCP-1008) We don't want to seek the video when pressing keys on the slider
+        // this.stepBack();
       }
     }
     /**
