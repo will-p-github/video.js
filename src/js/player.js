@@ -2238,8 +2238,11 @@ class Player extends Component {
 
     const isSrcReady = Boolean(!this.changingSrc_ && (this.src() || this.currentSrc()));
 
+    console.log(`isSrcReady: ${isSrcReady}`);
+
     // treat calls to play_ somewhat like the `one` event function
     if (this.waitToPlay_) {
+      console.log("Wait to play");
       this.off(['ready', 'loadstart'], this.waitToPlay_);
       this.waitToPlay_ = null;
     }
@@ -2247,6 +2250,8 @@ class Player extends Component {
     // if the player/tech is not ready or the src itself is not ready
     // queue up a call to play on `ready` or `loadstart`
     if (!this.isReady_ || !isSrcReady) {
+      console.log("Not ready");
+      console.log(`this.isReady ${this.isReady_}`);
       this.waitToPlay_ = (e) => {
         this.play_();
       };
@@ -2260,11 +2265,13 @@ class Player extends Component {
       return;
     }
 
+    console.log("triggering play on tech.");
     // If the player/tech is ready and we have a source, we can attempt playback.
     const val = this.techGet_('play');
 
     // play was terminated if the returned value is null
     if (val === null) {
+      console.log("Play terminated");
       this.runPlayTerminatedQueue_();
     } else {
       this.runPlayCallbacks_(val);
@@ -2303,6 +2310,7 @@ class Player extends Component {
     this.playTerminatedQueue_ = [];
 
     callbacks.forEach(function(cb) {
+      console.log("running callback");
       cb(val);
     });
   }
