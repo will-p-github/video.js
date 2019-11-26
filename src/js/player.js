@@ -2144,7 +2144,11 @@ class Player extends Component {
 
       try {
         if (this.tech_) {
-          this.tech_[method](arg);
+          if (this.tech_[method]) {
+            this.tech_[method](arg);
+          } else {
+            log(`${method} is not defined on this tech. Tried calling with ${arg}.`);
+          }
         }
       } catch (e) {
         log(e);
