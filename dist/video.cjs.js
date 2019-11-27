@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 7.5.5 <http://videojs.com/>
+ * Video.js 7.5.7 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -27,7 +27,7 @@ var mp4 = require('mux.js/lib/mp4');
 var tsInspector = _interopDefault(require('mux.js/lib/tools/ts-inspector.js'));
 var aesDecrypter = require('aes-decrypter');
 
-var version = "7.5.5";
+var version = "7.5.7";
 
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -22201,7 +22201,11 @@ function (_Component) {
 
       try {
         if (this.tech_) {
-          this.tech_[method](arg);
+          if (this.tech_[method]) {
+            this.tech_[method](arg);
+          } else {
+            log(method + " is not defined on this tech. Tried calling with " + arg + ".");
+          }
         }
       } catch (e) {
         log(e);

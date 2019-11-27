@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 7.5.5 <http://videojs.com/>
+ * Video.js 7.5.7 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -18,7 +18,7 @@
   window$1 = window$1 && window$1.hasOwnProperty('default') ? window$1['default'] : window$1;
   document = document && document.hasOwnProperty('default') ? document['default'] : document;
 
-  var version = "7.5.5";
+  var version = "7.5.7";
 
   function _inheritsLoose(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
@@ -24676,7 +24676,11 @@
 
         try {
           if (this.tech_) {
-            this.tech_[method](arg);
+            if (this.tech_[method]) {
+              this.tech_[method](arg);
+            } else {
+              log(method + " is not defined on this tech. Tried calling with " + arg + ".");
+            }
           }
         } catch (e) {
           log(e);
