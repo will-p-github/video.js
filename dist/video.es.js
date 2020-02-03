@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 7.5.7 <http://videojs.com/>
+ * Video.js 7.5.8 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -25,7 +25,7 @@ import { CaptionParser } from 'mux.js/lib/mp4';
 import tsInspector from 'mux.js/lib/tools/ts-inspector.js';
 import { Decrypter, AsyncStream, decrypt } from 'aes-decrypter';
 
-var version = "7.5.7";
+var version = "7.5.8";
 
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
