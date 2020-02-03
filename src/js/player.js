@@ -530,7 +530,7 @@ class Player extends Component {
     this.userActive(true);
     this.reportUserActivity();
 
-    this.one('play', this.listenForUserActivity_);
+    this.listenForUserActivity_();
     this.on('stageclick', this.handleStageClick_);
     this.on('keydown', this.handleKeyDown);
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 7.5.7 <http://videojs.com/>
+ * Video.js 7.5.8 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -18,7 +18,7 @@
   window$1 = window$1 && window$1.hasOwnProperty('default') ? window$1['default'] : window$1;
   document = document && document.hasOwnProperty('default') ? document['default'] : document;
 
-  var version = "7.5.7";
+  var version = "7.5.8";
 
   function _inheritsLoose(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
@@ -23033,7 +23033,7 @@
 
       _this.reportUserActivity();
 
-      _this.one('play', _this.listenForUserActivity_);
+      _this.listenForUserActivity_();
 
       _this.on('stageclick', _this.handleStageClick_);
 
