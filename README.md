@@ -1,5 +1,3 @@
-![Video.js logo][logo]
-
 # [Video.js - HTML5 Video Player][vjs]
 
 [![Build Status][travis-icon]][travis-link]
@@ -13,97 +11,28 @@
 
 ## Table of Contents
 
-* [Quick Start](#quick-start)
+* [Zero to Hero](#zero-to-hero)
 * [Contributing](#contributing)
 * [Code of Conduct](#code-of-conduct)
 * [License](#license)
 
-## Quick Start
+## Zero to Hero
 
-Thanks to the awesome folks over at [Fastly][fastly], there's a free, CDN hosted version of Video.js that anyone can use. Add these tags to your document's `<head>`:
+In order to make changes to this repository you need to be a member of the Softwire Employees team. Please contact helpdesk to add your account (this can now be done automatically via Bamboo).
 
-```html
-<link href="//vjs.zencdn.net/7.3.0/video-js.min.css" rel="stylesheet">
-<script src="//vjs.zencdn.net/7.3.0/video.min.js"></script>
-```
+After cloning the repository run `npm install` in the project's root directory.
+Build the app using `npm run-script build`.
 
-> For the latest version of video.js and URLs to use, check out the [Getting Started][getting-started] page on our website.
+If video.js as a dependancy in one of your projects and you want to make experimental changes to video.js source code you can point your project to your local copy of this repository. Once you have made your changes to video.js/src/ run `npm run-script build`. Navigate to the root directory of the project using video.js as a dependency and run `npm install <path-to-video.js-root-directory>#<branch-name>`.
 
-Video.js version 7 (and newer) CDN builds do not send any data to Google Analytics.
+There can be problems in using your local copy as a dependancy. If you are having trouble you can create a new repo on your personal github account and push your changes there. Make sure to build before you push.
 
-In older versions of Video.js (6 and earlier), in the `vjs.zencdn.net` CDN-hosted versions we include a [stripped down Google Analytics pixel](https://github.com/videojs/cdn/blob/master/src/analytics.js) that tracks a random sampling (currently 1%) of players loaded from the CDN. This allows us to see (roughly) what browsers are in use in the wild, along with other useful metrics such as OS and device. If you'd like to disable analytics, you can simply include the following global before including Video.js via the free CDN:
+`git remote add upstream <your-git-repo>
+git push upstream <branch-name>`
 
-```html
-<script>window.HELP_IMPROVE_VIDEOJS = false;</script>
-```
+Alternatively you can fork this repo directly. You can then point your project to the new repo using `npm install <your-github-name>/<your-repo-name>#<branch-name>` from the project's root directory.
 
-Alternatively, you can include Video.js by getting it from [npm](https://videojs.com/getting-started/#download-npm), downloading from [GitHub releases](https://github.com/videojs/video.js/releases) or by including it via [unpkg](https://unpkg.com) or another JavaScript CDN like CDNjs. These releases _do not_ include Google Analytics tracking at all.
-
-```html
-<!-- unpkg : use the latest version of Video.js -->
-<link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
-<script src="https://unpkg.com/video.js/dist/video.min.js"></script>
-
-<!-- unpkg : use a specific version of Video.js (change the version numbers as necessary) -->
-<link href="https://unpkg.com/video.js@6.11.0/dist/video-js.min.css" rel="stylesheet">
-<script src="https://unpkg.com/video.js@6.11.0/dist/video.min.js"></script>
-
-<!-- cdnjs : use a specific version of Video.js (change the version numbers as necessary) -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/6.7.3/video-js.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/6.7.3/video.min.js"></script>
-```
-
-Next, using Video.js is as simple as creating a `<video>` element, but with an additional `data-setup` attribute. At a minimum, this attribute must have a value of `'{}'`, but it can include any Video.js [options][options] - just make sure it contains valid JSON!
-
-```html
-<video
-    id="my-player"
-    class="video-js"
-    controls
-    preload="auto"
-    poster="//vjs.zencdn.net/v/oceans.png"
-    data-setup='{}'>
-  <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
-  <source src="//vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
-  <source src="//vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>
-  <p class="vjs-no-js">
-    To view this video please enable JavaScript, and consider upgrading to a
-    web browser that
-    <a href="https://videojs.com/html5-video-support/" target="_blank">
-      supports HTML5 video
-    </a>
-  </p>
-</video>
-```
-
-When the page loads, Video.js will find this element and automatically setup a player in its place.
-
-If you don't want to use automatic setup, you can leave off the `data-setup` attribute and initialize a `<video>` element manually using the `videojs` function:
-
-```js
-var player = videojs('my-player');
-```
-
-The `videojs` function also accepts an `options` object and a callback to be invoked
- when the player is ready:
-
-```js
-var options = {};
-
-var player = videojs('my-player', options, function onPlayerReady() {
-  videojs.log('Your player is ready!');
-
-  // In this context, `this` is the player that was created by Video.js.
-  this.play();
-
-  // How about an event listener?
-  this.on('ended', function() {
-    videojs.log('Awww...over so soon?!');
-  });
-});
-```
-
-If you're ready to dive in, the [Getting Started][getting-started] page and [documentation][docs] are the best places to go for more information. If you get stuck, head over to our [Slack channel][slack-link]!
+If you would like to make a pull request to Softwire's video.js repository and you're a member of the Softwire Employee's team: Change the version number of your local copy of video.js in the package.json file. Build, commit the change with a message along the lines of `updated to version-<new-version-number> and built` and then push to your repo. Next create a new branch at Softwire/video.js with name `master-<new-version-number>`. From your own video.js repo create a pull request into the new branch of Softwire/video.js.
 
 ## Contributing
 
