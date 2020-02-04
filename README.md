@@ -27,8 +27,9 @@ If video.js as a dependancy in one of your projects and you want to make experim
 
 There can be problems in using your local copy as a dependancy. If you are having trouble you can create a new repo on your personal github account and push your changes there. Make sure to build before you push.
 
-`git remote add upstream <your-git-repo>
-git push upstream <branch-name>`
+`git remote add upstream <your-git-repo>`
+
+`git push upstream <branch-name>`
 
 Alternatively you can fork this repo directly. You can then point your project to the new repo using `npm install <your-github-name>/<your-repo-name>#<branch-name>` from the project's root directory.
 
