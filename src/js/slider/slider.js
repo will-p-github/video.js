@@ -257,16 +257,9 @@ class Slider extends Component {
       progress = 0;
     }
 
-    // Convert to a percentage for setting
-    const percentage = (progress * 100).toFixed(2) + '%';
-    const style = bar.el().style;
-
-    // Set the new bar width or height
-    if (this.vertical()) {
-      style.height = percentage;
-    } else {
-      style.width = percentage;
-    }
+    // VideoJS used to set the width of the play-progress-bar here,
+    // this would occasionally conflict with the width set by the c5 player.
+    // The width of the play-progress-bar is now handled entirely by the player.
 
     return progress;
   }
