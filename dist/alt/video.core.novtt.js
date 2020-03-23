@@ -13121,7 +13121,9 @@
     _proto.updateTime = function updateTime(seekBarRect, seekBarPoint, time, cb) {
       var _this = this;
 
-      // If there is an existing rAF ID, cancel it so we don't over-queue.
+      // eslint-disable-next-line no-console
+      console.log('WILL IN TIME TOOLTIP UPDATE'); // If there is an existing rAF ID, cancel it so we don't over-queue.
+
       if (this.rafId_) {
         this.cancelAnimationFrame(this.rafId_);
       }
@@ -13209,7 +13211,9 @@
         return;
       }
 
-      var time = this.player_.scrubbing() ? this.player_.getCache().currentTime : this.player_.currentTime();
+      var time = this.player_.scrubbing() ? this.player_.getCache().currentTime : this.player_.currentTime(); // eslint-disable-next-line no-console
+
+      console.log('WILL PLAY PROGRESS BAR UPDATING TIME TOOLTIP');
       timeTooltip.updateTime(seekBarRect, seekBarPoint, time);
     };
 
@@ -13399,6 +13403,9 @@
     _proto.enableUpdates = function enableUpdates() {
       var _this2 = this;
 
+      // eslint-disable-next-line no-console
+      console.log('WILL ENABLE UPDATES');
+
       if (this.updateInterval !== null) {
         this.clearInterval(this.updateInterval);
       }
@@ -13415,6 +13422,9 @@
     ;
 
     _proto.disableUpdates = function disableUpdates() {
+      // eslint-disable-next-line no-console
+      console.log('WILL DISABLE UPDATES');
+
       if (this.updateInterval !== null) {
         this.clearInterval(this.updateInterval);
       }
@@ -13461,7 +13471,9 @@
 
       this.el_.setAttribute('aria-valuenow', (percent * 100).toFixed(2)); // human readable value of progress bar (time complete)
 
-      this.el_.setAttribute('aria-valuetext', this.localize('progress bar timing: currentTime={1} duration={2}', [formatTime(currentTime, duration), formatTime(duration, duration)], '{1} of {2}')); // Update the `PlayProgressBar`.
+      this.el_.setAttribute('aria-valuetext', this.localize('progress bar timing: currentTime={1} duration={2}', [formatTime(currentTime, duration), formatTime(duration, duration)], '{1} of {2}')); // eslint-disable-next-line no-console
+
+      console.log('WILL UPDATE PLAY PROGRESS BAR FROM SEEK BAR'); // Update the `PlayProgressBar`.
 
       if (this.bar) {
         this.bar.update(getBoundingClientRect(this.el_), percent);

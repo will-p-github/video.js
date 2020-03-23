@@ -91,6 +91,9 @@ class SeekBar extends Slider {
    * Enable updates of the progress bar
    */
   enableUpdates() {
+    // eslint-disable-next-line no-console
+    console.log('WILL ENABLE UPDATES');
+
     if (this.updateInterval !== null) {
       this.clearInterval(this.updateInterval);
     }
@@ -105,6 +108,9 @@ class SeekBar extends Slider {
    * Disable updates of the progress bar
    */
   disableUpdates() {
+    // eslint-disable-next-line no-console
+    console.log('WILL DISABLE UPDATES');
+
     if (this.updateInterval !== null) {
       this.clearInterval(this.updateInterval);
     }
@@ -158,6 +164,9 @@ class SeekBar extends Slider {
         '{1} of {2}'
       )
     );
+
+    // eslint-disable-next-line no-console
+    console.log('WILL UPDATE PLAY PROGRESS BAR FROM SEEK BAR');
 
     // Update the `PlayProgressBar`.
     if (this.bar) {

@@ -55,6 +55,9 @@ class PlayProgressBar extends Component {
       this.player_.getCache().currentTime :
       this.player_.currentTime();
 
+    // eslint-disable-next-line no-console
+    console.log('WILL PLAY PROGRESS BAR UPDATING TIME TOOLTIP');
+
     timeTooltip.updateTime(seekBarRect, seekBarPoint, time);
   }
 }

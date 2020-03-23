@@ -103,6 +103,9 @@ class TimeTooltip extends Component {
    *        for tooltips that need to do additional animations from the default
    */
   updateTime(seekBarRect, seekBarPoint, time, cb) {
+    // eslint-disable-next-line no-console
+    console.log('WILL IN TIME TOOLTIP UPDATE');
+
     // If there is an existing rAF ID, cancel it so we don't over-queue.
     if (this.rafId_) {
       this.cancelAnimationFrame(this.rafId_);
