@@ -37,6 +37,12 @@ class TimeTooltip extends Component {
    *        from the left edge of the {@link SeekBar}
    */
   update(seekBarRect, seekBarPoint, content) {
+    // eslint-disable-next-line no-console
+    console.log('UPDATE FURTHER IN TIME TOOLTIP');
+
+    // eslint-disable-next-line no-console
+    console.log(content);
+
     const tooltipRect = Dom.getBoundingClientRect(this.el_);
     const playerRect = Dom.getBoundingClientRect(this.player_.el());
     const seekBarPointPx = seekBarRect.width * seekBarPoint;
@@ -81,6 +87,9 @@ class TimeTooltip extends Component {
       pullTooltipBy = tooltipRect.width;
     }
 
+    // eslint-disable-next-line no-console
+    console.log('WILL JUST BEFORE SETTING TEXT CONTENT');
+
     this.el_.style.right = `-${pullTooltipBy}px`;
     Dom.textContent(this.el_, content);
   }
@@ -110,6 +119,9 @@ class TimeTooltip extends Component {
     if (this.rafId_) {
       this.cancelAnimationFrame(this.rafId_);
     }
+
+    // eslint-disable-next-line no-console
+    console.log('SET NEW RAFID');
 
     this.rafId_ = this.requestAnimationFrame(() => {
       let content;

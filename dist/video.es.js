@@ -12397,6 +12397,10 @@ function (_Component) {
   ;
 
   _proto.update = function update(seekBarRect, seekBarPoint, content) {
+    // eslint-disable-next-line no-console
+    console.log('UPDATE FURTHER IN TIME TOOLTIP'); // eslint-disable-next-line no-console
+
+    console.log(content);
     var tooltipRect = getBoundingClientRect(this.el_);
     var playerRect = getBoundingClientRect(this.player_.el());
     var seekBarPointPx = seekBarRect.width * seekBarPoint; // do nothing if either rect isn't available
@@ -12434,8 +12438,10 @@ function (_Component) {
       pullTooltipBy = 0;
     } else if (pullTooltipBy > tooltipRect.width) {
       pullTooltipBy = tooltipRect.width;
-    }
+    } // eslint-disable-next-line no-console
 
+
+    console.log('WILL JUST BEFORE SETTING TEXT CONTENT');
     this.el_.style.right = "-" + pullTooltipBy + "px";
     textContent(this.el_, content);
   }
@@ -12466,8 +12472,10 @@ function (_Component) {
 
     if (this.rafId_) {
       this.cancelAnimationFrame(this.rafId_);
-    }
+    } // eslint-disable-next-line no-console
 
+
+    console.log('SET NEW RAFID');
     this.rafId_ = this.requestAnimationFrame(function () {
       var content;
 
