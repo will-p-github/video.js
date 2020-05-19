@@ -25782,6 +25782,8 @@
     ;
 
     _proto.resetControlBarUI_ = function resetControlBarUI_() {
+      // eslint-disable-next-line no-console
+      console.log('VIDEOJS: RESET CONTROL BAR UI');
       this.resetProgressBar_();
       this.resetPlaybackRate_();
       this.resetVolumeBar_();
@@ -26355,10 +26357,14 @@
 
       if (controlBar && !IS_IOS && !IS_ANDROID) {
         controlBar.on('mouseenter', function (event) {
+          // eslint-disable-next-line no-console
+          console.log('VIDEOJS: ON MOUSE ENTER');
           this.player().cache_.inactivityTimeout = this.player().options_.inactivityTimeout;
           this.player().options_.inactivityTimeout = 0;
         });
         controlBar.on('mouseleave', function (event) {
+          // eslint-disable-next-line no-console
+          console.log('VIDEOJS: ON MOUSE LEAVE');
           this.player().options_.inactivityTimeout = this.player().cache_.inactivityTimeout;
         });
       } // Listen for keyboard navigation
