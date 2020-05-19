@@ -3211,6 +3211,8 @@ class Player extends Component {
    * all of Control Bar's components
    */
   resetControlBarUI_() {
+    // @ts-ignore
+    console.log('VIDEOJS: RESET CONTROL BAR UI');
     this.resetProgressBar_();
     this.resetPlaybackRate_();
     this.resetVolumeBar_();
@@ -3770,11 +3772,15 @@ class Player extends Component {
     if (controlBar && !browser.IS_IOS && !browser.IS_ANDROID) {
 
       controlBar.on('mouseenter', function(event) {
+        // @ts-ignore
+        console.log('VIDEOJS: ON MOUSE ENTER');
         this.player().cache_.inactivityTimeout = this.player().options_.inactivityTimeout;
         this.player().options_.inactivityTimeout = 0;
       });
 
       controlBar.on('mouseleave', function(event) {
+        // @ts-ignore
+        console.log('VIDEOJS: ON MOUSE LEAVE');
         this.player().options_.inactivityTimeout = this.player().cache_.inactivityTimeout;
       });
 
